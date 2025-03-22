@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
 
-    <!-- App colors -->
-    <color name="green125">#FF2D5D56</color>
-    <color name="gray175">#AFAFAFAF</color>
+    <!--Color Palette-->
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray236">#FFECECEC</color>
+    <color name="gray186">#FFBABABA</color>
+    <color name="green125">#FF4F7D79</color>
+    <color name="red212">#FFD46D77</color>
+    <color name="black">#FF000000</color>
+
+    <!-- Color app -->
+    <color name="color_placeholder">@color/gray186</color>
+    <color name="color_green">@color/green125</color>
 
 </resources>

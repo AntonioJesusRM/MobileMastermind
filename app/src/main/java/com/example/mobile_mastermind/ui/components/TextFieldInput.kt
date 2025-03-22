@@ -19,7 +19,7 @@ import com.example.mobile_mastermind.R
 @Composable
 fun TextFieldInput(
     value: MutableState<String>,
-    label: String,
+    placeholder: String,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit = { value.value = it },
     isPassword: Boolean = false
@@ -27,14 +27,14 @@ fun TextFieldInput(
     OutlinedTextField(
         value = value.value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
-        label = {
+        placeholder = {
             Text(
-                text = label,
+                text = placeholder,
                 fontSize = 14.sp,
-                color = colorResource(id = R.color.gray175)
+                color = colorResource(id = R.color.color_placeholder)
             )
         },
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         singleLine = true
@@ -46,5 +46,8 @@ fun TextFieldInput(
 fun TextFieldInputPreview() {
     val textState =
         androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
-    TextFieldInput(value = textState, label = stringResource(id = R.string.user_name_playholder))
+    TextFieldInput(
+        value = textState,
+        placeholder = stringResource(id = R.string.user_name_playholder)
+    )
 }

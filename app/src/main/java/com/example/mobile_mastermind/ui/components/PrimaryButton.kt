@@ -22,7 +22,7 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = colorResource(id = R.color.green125),
+    backgroundColor: Color = colorResource(id = R.color.color_green),
     contentColor: Color = Color.White
 ) {
     Button(
