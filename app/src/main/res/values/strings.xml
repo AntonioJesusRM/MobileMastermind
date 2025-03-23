@@ -2,6 +2,7 @@
     <string name="app_name">MOBILE-MASTERMIND</string>
     <!-- Strings for Login -->
     <string name="login_username_placeholder">Introduce tu usuario</string>
+    <string name="login_username">Usuario</string>
     <string name="login_button">Iniciar sesión</string>
 
     <!-- Strings for Result -->
