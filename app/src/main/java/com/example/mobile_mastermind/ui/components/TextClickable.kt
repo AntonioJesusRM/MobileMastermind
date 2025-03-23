@@ -44,7 +44,7 @@ fun TextClickable(
 
         if (!laterText.isNullOrEmpty()) {
             Text(
-                text = " $laterText",
+                text = laterText,
                 fontSize = 15.sp,
                 color = colorResource(R.color.black)
             )
