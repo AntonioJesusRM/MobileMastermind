@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MOBILE-MASTERMIND</string>
+    <!-- Strings for Login -->
+    <string name="login_username_placeholder">Introduce tu usuario</string>
+    <string name="login_username">Usuario</string>
+    <string name="login_button">Iniciar sesión</string>
+
+    <!-- Strings for Result -->
+    <string name="result_category">Categoría:</string>
+    <string name="result_score">Has obtenido %d puntos!!!</string>
+
+    <!-- String for Home -->
+    <string name="home_icon_arrow_description">"Icono flecha horizontal para ir hacia delante"</string>
+
+    <!-- String for Ranking -->
+    <string name="ranking_profile_image_description">Profile image</string>
+
 </resources>
