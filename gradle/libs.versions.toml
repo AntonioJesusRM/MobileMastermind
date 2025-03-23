@@ -9,6 +9,13 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2025.03.00"
 
+#Hilt
+hiltNavigationCompose = "1.0.0"
+hiltAndroid = "2.47"
+
+#Plugins
+pluginDaggerHilt = "2.47"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -28,7 +35,13 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 #ICONS
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 
+#HILT
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hiltPluggin = { id = "com.google.dagger.hilt.android", version.ref = "pluginDaggerHilt" }
 
