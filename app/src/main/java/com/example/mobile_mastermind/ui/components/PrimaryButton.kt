@@ -17,6 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_mastermind.R
 
+/**
+ * A customizable primary button component for Jetpack Compose.
+ *
+ * @param text The text to display on the button.
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param modifier The modifier to be applied to the button.
+ * @param backgroundColor The background color of the button. Defaults to green.
+ * @param contentColor The color of the text inside the button. Defaults to white.
+ */
+
 @Composable
 fun PrimaryButton(
     text: String,

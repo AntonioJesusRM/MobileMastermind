@@ -16,6 +16,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_mastermind.R
 
+/**
+ * A customizable text input field component for Jetpack Compose.
+ *
+ * @param value The current value of the text field, represented as a [MutableState].
+ * @param placeholder The placeholder text to display when the field is empty.
+ * @param modifier The modifier to be applied to the text field.
+ * @param onValueChange The callback to be invoked when the text value changes.
+ * @param isPassword Whether the input should be treated as a password (obscured text). Defaults to false.
+ */
+
 @Composable
 fun TextFieldInput(
     value: MutableState<String>,
