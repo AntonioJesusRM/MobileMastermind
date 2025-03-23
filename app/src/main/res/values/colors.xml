@@ -18,5 +18,6 @@
     <!-- Color app -->
     <color name="color_placeholder">@color/gray186</color>
     <color name="color_green">@color/green125</color>
+    <color name="color_red">@color/red212</color>
 
 </resources>
