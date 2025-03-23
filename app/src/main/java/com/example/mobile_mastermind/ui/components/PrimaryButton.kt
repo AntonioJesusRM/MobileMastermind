@@ -59,7 +59,7 @@ fun PrimaryButton(
 @Composable
 fun PrimaryButtonPreview() {
     PrimaryButton(
-        text = stringResource(id = R.string.login),
+        text = stringResource(id = R.string.login_button),
         onClick = {},
         modifier = Modifier
     )

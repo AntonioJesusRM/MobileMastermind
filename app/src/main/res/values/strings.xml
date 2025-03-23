@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">MOBILE-MASTERMIND</string>
     <!-- Strings for login -->
-    <string name="user_name_playholder">Introduce tu usuario</string>
-    <string name="login">Iniciar sesión</string>
+    <string name="login_username_placeholder">Introduce tu usuario</string>
+    <string name="login_button">Iniciar sesión</string>
+
+    <!-- String for home -->
+    <string name="home_icon_arrow_description">"Icono flecha horizontal para ir hacia delante"</string>
+
 </resources>

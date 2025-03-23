@@ -58,6 +58,6 @@ fun TextFieldInputPreview() {
         androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
     TextFieldInput(
         value = textState,
-        placeholder = stringResource(id = R.string.user_name_playholder)
+        placeholder = stringResource(id = R.string.login_username_placeholder)
     )
 }

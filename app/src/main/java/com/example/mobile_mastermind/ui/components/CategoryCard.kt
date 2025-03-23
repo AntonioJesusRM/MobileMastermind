@@ -79,7 +79,7 @@ fun CategoryCard(
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                contentDescription = stringResource(R.string.login),
+                contentDescription = stringResource(R.string.home_icon_arrow_description),
                 tint = colorResource(R.color.color_green)
             )
         }
