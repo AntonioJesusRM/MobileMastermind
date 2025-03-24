@@ -1,4 +1,4 @@
-package com.example.mobile_mastermind.ui.login
+package com.example.mobile_mastermind.ui.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,8 +24,8 @@ import com.example.mobile_mastermind.ui.components.TextClickable
 import com.example.mobile_mastermind.ui.components.TextFieldInput
 
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel()) {
-    val uiState = loginViewModel.uiState.value
+fun RegisterScreen(registerViewModel: RegisterViewModel = hiltViewModel()) {
+    val uiState = registerViewModel.uiState.value
 
     Column(
         modifier = Modifier
@@ -38,55 +38,57 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(R.string.app_name_first),
+                text = stringResource(R.string.register_title),
                 fontSize = 40.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.Black
             )
-            Text(
-                text = stringResource(R.string.app_name_second),
-                fontSize = 40.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             TextFieldInput(
                 value = uiState.username,
-                onValueChange = { loginViewModel.onUsernameChanged(it) },
+                onValueChange = { registerViewModel.onUsernameChanged(it) },
                 title = stringResource(id = R.string.username),
                 placeholder = stringResource(id = R.string.login_username_placeholder),
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(11.dp))
             TextFieldInput(
                 value = uiState.password,
-                onValueChange = { loginViewModel.onPasswordChanged(it) },
+                onValueChange = { registerViewModel.onEmailChanged(it) },
+                title = stringResource(id = R.string.register_email),
+                placeholder = stringResource(id = R.string.register_email)
+            )
+            Spacer(modifier = Modifier.height(11.dp))
+            TextFieldInput(
+                value = uiState.password,
+                onValueChange = { registerViewModel.onPasswordChanged(it) },
                 title = stringResource(id = R.string.password),
-                placeholder = stringResource(id = R.string.login_password_placeholder),
+                placeholder = stringResource(id = R.string.password),
                 isPassword = true
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            TextClickable(
-                stringResource(R.string.login_forgot_password),
-                stringResource(R.string.login_forgot_password_clickable),
-                "?",
-                onClick = { loginViewModel.onForgotPasswordClicked() }
+            Spacer(modifier = Modifier.height(11.dp))
+            TextFieldInput(
+                value = uiState.password,
+                onValueChange = { registerViewModel.onRepeatPasswordChanged(it) },
+                title = stringResource(id = R.string.register_repeat_password),
+                placeholder = stringResource(id = R.string.register_repeat_password),
+                isPassword = true
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            PrimaryButton(text = stringResource(id = R.string.login_button),
-                onClick = { loginViewModel.onLoginClicked() })
+            Spacer(modifier = Modifier.height(11.dp))
+            PrimaryButton(
+                text = stringResource(id = R.string.register_button),
+                onClick = { registerViewModel.onRegisterClicked() })
         }
         TextClickable(
-            stringResource(R.string.login_register_prompt),
-            stringResource(R.string.login_register_prompt_clickable),
-            onClick = { loginViewModel.onRegisterClicked() }
-        )
+            stringResource(R.string.register_login_prompt),
+            stringResource(R.string.register_login_prompt_clickable),
+            onClick = { registerViewModel.onLoginClicked() })
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
-    val viewModel = LoginViewModel()
-    LoginScreen(loginViewModel = viewModel)
+fun RegisterScreenPreview() {
+    val viewModel = RegisterViewModel()
+    RegisterScreen(registerViewModel = viewModel)
 }
