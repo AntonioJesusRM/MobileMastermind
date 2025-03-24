@@ -1,9 +1,18 @@
 <resources>
     <string name="app_name">MOBILE-MASTERMIND</string>
+    <string name="app_name_first">MOBILE</string>
+    <string name="app_name_second">MASTERMIND</string>
+
     <!-- Strings for Login -->
-    <string name="login_username_placeholder">Introduce tu usuario</string>
     <string name="login_username">Usuario</string>
+    <string name="login_username_placeholder">Introduce tu usuario</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_password_placeholder">Introduce tu contraseña</string>
+    <string name="login_forgot_password">¿Has olvidado tu</string>
+    <string name="login_forgot_password_clickable">contraseña</string>
     <string name="login_button">Iniciar sesión</string>
+    <string name="login_register_prompt">¿No tienes una cuenta?</string>
+    <string name="login_register_prompt_clickable">Regístrate</string>
 
     <!-- Strings for Result -->
     <string name="result_category">Categoría:</string>

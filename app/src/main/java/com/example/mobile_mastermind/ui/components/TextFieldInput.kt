@@ -3,10 +3,9 @@ package com.example.mobile_mastermind.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -32,11 +31,11 @@ import com.example.mobile_mastermind.R
  */
 @Composable
 fun TextFieldInput(
-    value: MutableState<String>,
+    value: String,
     title: String,
     placeholder: String,
     modifier: Modifier = Modifier,
-    onValueChange: (String) -> Unit = { value.value = it },
+    onValueChange: (String) -> Unit,
     isPassword: Boolean = false
 ) {
     Column(
@@ -50,8 +49,8 @@ fun TextFieldInput(
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        OutlinedTextField(
-            value = value.value,
+        TextField(
+            value = value,
             onValueChange = onValueChange,
             placeholder = {
                 Text(
@@ -61,10 +60,11 @@ fun TextFieldInput(
                 )
             },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
+            colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorResource(R.color.white),
                 unfocusedContainerColor = colorResource(R.color.white),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             singleLine = true
@@ -75,10 +75,9 @@ fun TextFieldInput(
 @Preview(showBackground = true)
 @Composable
 fun TextFieldInputPreview() {
-    val textState =
-        androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
     TextFieldInput(
-        value = textState,
+        value = "",
+        onValueChange = {},
         title = stringResource(id = R.string.login_username),
         placeholder = stringResource(id = R.string.login_username_placeholder)
     )
