@@ -41,11 +41,10 @@ fun TextFieldInput(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
     ) {
         Text(
             text = title,
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -78,7 +77,7 @@ fun TextFieldInputPreview() {
     TextFieldInput(
         value = "",
         onValueChange = {},
-        title = stringResource(id = R.string.login_username),
+        title = stringResource(id = R.string.username),
         placeholder = stringResource(id = R.string.login_username_placeholder)
     )
 }
