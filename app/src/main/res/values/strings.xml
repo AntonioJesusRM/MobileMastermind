@@ -29,9 +29,16 @@
     <string name="result_score">Has obtenido %d puntos!!!</string>
 
     <!-- String for Home -->
-    <string name="home_icon_arrow_description">"Icono flecha horizontal para ir hacia delante"</string>
+    <string name="home_greeting_msg">Hola!</string>
+    <string name="home_user_points">%d puntos</string>
+    <string name="home_user_image_content_description">Imagen del usuario</string>
+    <string name="home_last_game_text">Última partida:</string>
+    <string name="home_title_categories">Categorias</string>
+    <string name="home_icon_arrow_content_description">"Icono flecha horizontal para ir hacia delante"</string>
 
     <!-- String for Ranking -->
     <string name="ranking_profile_image_description">Profile image</string>
+    <string name="home_category_image_content_description">Imagen de la categoria</string>
+
 
 </resources>
