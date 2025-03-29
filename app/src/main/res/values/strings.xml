@@ -37,6 +37,13 @@
     <string name="home_icon_arrow_content_description">"Icono flecha horizontal para ir hacia delante"</string>
     <string name="home_category_image_content_description">Imagen de la categoria</string>
 
+    <!-- String for Review -->
+    <string name="review_button_done">Hecho</string>
+    <string name="review_title_answers">Tus respuestas</string>
+    <string name="review_title">Resultados</string>
+    <string name="review_correct_content_description">Icono de respuesta correcta</string>
+    <string name="review_incorrect_content_description">Icono de respuesta incorrecta</string>
+
     <!-- String for Ranking -->
     <string name="ranking_profile_image_description">Profile image</string>
     <string name="ranking_title">Clasificación</string>
