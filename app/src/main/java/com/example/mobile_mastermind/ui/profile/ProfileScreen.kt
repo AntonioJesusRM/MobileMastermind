@@ -160,7 +160,7 @@ private fun StatCard(stat: StatItem) {
         colors = CardDefaults.cardColors(
             containerColor = if (stat.statImg == null) colorResource(
                 stat.statColor
-            ) else colorResource(R.color.color_placeholder)
+            ) else colorResource(R.color.color_background)
         )
     ) {
         Column(
@@ -323,7 +323,7 @@ private fun ProfileCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(24.dp, 0.dp), colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.color_green),
+            containerColor = colorResource(R.color.color_background),
         )
     ) {
         Box(
