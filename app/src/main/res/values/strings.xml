@@ -46,6 +46,12 @@
 
     <!-- String for Ranking -->
     <string name="ranking_profile_image_description">Profile image</string>
+    <string name="ranking_title">Clasificación</string>
+    <string name="ranking_your_position">Tu</string>
+    <string name="ranking_avatar_content_description">Avatar</string>
+    <string name="ranking_medal_content_description">Medalla %dº posicion</string>
+    <string name="ranking_crown_content_description">Corona</string>
+    <string name="ranking_points">%d puntos</string>
 
     <!-- String for Profile -->
     <string name="profile_icon_content_description">Ajustes</string>
