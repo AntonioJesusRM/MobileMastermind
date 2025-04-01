@@ -26,6 +26,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,15 +43,13 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.PlaceholderLight
 import com.example.mobile_mastermind.ui.theme.RedLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -86,8 +85,7 @@ fun GameScreen(gameViewModel: GameViewModel = hiltViewModel()) {
             modifier = Modifier,
             currentQuestionIndex = uiState.currentQuestionIndex,
             totalQuestions = uiState.questions.size,
-            onTimeOut = { gameViewModel.timeOut() }
-        )
+            onTimeOut = { gameViewModel.timeOut() })
 
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -104,9 +102,7 @@ fun GameScreen(gameViewModel: GameViewModel = hiltViewModel()) {
         ) {
             items(items = currentQuestion.options) { option ->
                 AnswerButton(
-                    answer = option.text,
-                    onClick = { gameViewModel.selectAnswer(option.id) }
-                )
+                    answer = option.text, onClick = { gameViewModel.selectAnswer(option.id) })
             }
         }
     }
@@ -238,18 +234,15 @@ private fun TimerCard(
                 }
 
                 Text(
-                    text = "$remainingTime", style = TextStyle(
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = getTimerColor(remainingTime)
-                    )
+                    text = "$remainingTime",
+                    color = getTimerColor(remainingTime),
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
             Text(
                 text = "${currentQuestionIndex + 1}/$totalQuestions",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.Black,
                 modifier = Modifier.align(Alignment.TopEnd)
             )
@@ -267,9 +260,7 @@ private fun getTimerColor(remainingTime: Int): Color {
 
 @Composable
 private fun AnswerButton(
-    answer: String,
-    isCorrect: Boolean? = null,
-    onClick: () -> Unit
+    answer: String, isCorrect: Boolean? = null, onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
@@ -278,8 +269,7 @@ private fun AnswerButton(
                 true -> GreenLight
                 false -> RedLight
                 else -> White
-            },
-            contentColor = when (isCorrect) {
+            }, contentColor = when (isCorrect) {
                 true -> White
                 false -> White
                 else -> Color.Black
@@ -298,9 +288,7 @@ private fun AnswerButton(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = answer,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
+                text = answer, style = MaterialTheme.typography.titleMedium
             )
 
             if (isCorrect != null) {
@@ -313,9 +301,7 @@ private fun AnswerButton(
                     )
                 } else {
                     Surface(
-                        shape = CircleShape,
-                        color = White,
-                        modifier = Modifier.size(28.dp)
+                        shape = CircleShape, color = White, modifier = Modifier.size(28.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -332,8 +318,7 @@ private fun AnswerButton(
 
 @Composable
 private fun QuestionCard(
-    question: String,
-    imageRes: Int? = null
+    question: String, imageRes: Int? = null
 ) {
     Card(
         modifier = Modifier
@@ -357,7 +342,7 @@ private fun QuestionCard(
                         .size(100.dp)
                 )
             }
-            Text(text = question, fontSize = 16.sp)
+            Text(text = question, style = MaterialTheme.typography.titleMedium)
         }
     }
 }
@@ -365,6 +350,8 @@ private fun QuestionCard(
 @Preview(showBackground = true)
 @Composable
 fun GameScreenPreview() {
-    val gameViewModel = GameViewModel()
-    GameScreen(gameViewModel = gameViewModel)
+    MOBILEMASTERMINDTheme {
+        val gameViewModel = GameViewModel()
+        GameScreen(gameViewModel = gameViewModel)
+    }
 }

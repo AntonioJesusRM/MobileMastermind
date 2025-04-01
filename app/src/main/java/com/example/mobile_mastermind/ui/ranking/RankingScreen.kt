@@ -32,16 +32,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
@@ -68,8 +67,7 @@ fun RankingScreen(
     ) {
         Text(
             text = stringResource(R.string.ranking_title),
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(22.dp))
         TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
@@ -156,8 +154,7 @@ private fun TopRankingItem(
 
         Text(
             text = name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
 
@@ -257,7 +254,9 @@ private fun RankingCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "$position", fontSize = 20.sp, modifier = Modifier.width(30.dp)
+                    text = "$position",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.width(30.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
@@ -268,12 +267,13 @@ private fun RankingCard(
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = if (yourPosition) stringResource(R.string.ranking_your_position) else playerName,
-                    fontSize = 20.sp
+                    style = MaterialTheme.typography.titleSmall
                 )
             }
 
             Text(
-                text = stringResource(R.string.ranking_points, score), fontSize = 15.sp
+                text = stringResource(R.string.ranking_points, score),
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -282,6 +282,8 @@ private fun RankingCard(
 @Preview(showBackground = true)
 @Composable
 fun RankingScreenPreview() {
-    val viewModel = RankingViewModel()
-    RankingScreen(rankingViewModel = viewModel)
+    MOBILEMASTERMINDTheme {
+        val viewModel = RankingViewModel()
+        RankingScreen(rankingViewModel = viewModel)
+    }
 }

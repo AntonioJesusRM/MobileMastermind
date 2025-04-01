@@ -35,16 +35,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.GoldLight
 import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.PlaceholderLight
 import com.example.mobile_mastermind.ui.theme.RedLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -65,8 +64,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.height(13.dp))
         Text(
             text = stringResource(R.string.profile_title_stats),
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(15.dp))
         StatsCard(modifier = Modifier, uiState.stats)
@@ -86,8 +84,7 @@ private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>)
             ) {
                 Text(
                     text = stringResource(R.string.profile_empty_stats),
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Medium
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         } else {
@@ -175,18 +172,16 @@ private fun StatCard(stat: StatItem) {
         ) {
             if (stat.statImg != null) {
                 PutImage(stat.statBackground, stat.statImg, stat.statColor)
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(14.dp))
                 Text(
                     text = stat.title,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 1
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${stat.value} ${stat.unit}",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             } else {
                 Box(
@@ -194,8 +189,7 @@ private fun StatCard(stat: StatItem) {
                 ) {
                     Text(
                         text = stringResource(R.string.ranking_category_title, stat.title),
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -307,12 +301,12 @@ private fun ProfileStatItem(
 
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Text(
             text = value.toString(),
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.bodyLarge,
             color = textColor
         )
     }
@@ -351,10 +345,10 @@ private fun ProfileCard(
                     }
                     Spacer(modifier = Modifier.width(11.dp))
                     Text(
-                        text = userName, fontSize = 30.sp, fontWeight = FontWeight.Medium
+                        text = userName, style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = userEmail, fontSize = 15.sp, fontWeight = FontWeight.Normal
+                        text = userEmail, style = MaterialTheme.typography.titleSmall,
                     )
                 }
             }
@@ -371,6 +365,8 @@ private fun ProfileCard(
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
-    val viewModel = ProfileViewModel()
-    ProfileScreen(profileViewModel = viewModel)
+    MOBILEMASTERMINDTheme {
+        val viewModel = ProfileViewModel()
+        ProfileScreen(profileViewModel = viewModel)
+    }
 }

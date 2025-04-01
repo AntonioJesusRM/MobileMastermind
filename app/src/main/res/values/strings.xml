@@ -42,6 +42,7 @@
     <string name="review_button_done">Hecho</string>
     <string name="review_title_answers">Tus respuestas</string>
     <string name="review_title">Resultados</string>
+    <string name="review_number_question">P%d</string>
     <string name="review_correct_content_description">Icono de respuesta correcta</string>
     <string name="review_incorrect_content_description">Icono de respuesta incorrecta</string>
 

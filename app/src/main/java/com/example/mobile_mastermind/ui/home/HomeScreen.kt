@@ -29,13 +29,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
@@ -96,17 +95,17 @@ private fun UserInfoSection(
                 Column {
                     Text(
                         text = stringResource(R.string.home_greeting_msg),
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = userName, fontWeight = FontWeight.Bold, fontSize = 15.sp
+                        text = userName,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
             Text(
                 text = stringResource(R.string.home_user_points, points),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         LastGameCard(lastGame = lastGame)
@@ -138,15 +137,13 @@ private fun LastGameCard(lastGame: LastGame) {
             Row {
                 Text(
                     text = stringResource(R.string.home_last_game_text),
-                    fontWeight = FontWeight.Normal,
                     color = White,
-                    fontSize = 20.sp
+                    style = MaterialTheme.typography.titleSmall
                 )
                 Text(
                     text = " " + stringResource(R.string.home_user_points, lastGame.points),
-                    fontWeight = FontWeight.Bold,
                     color = White,
-                    fontSize = 20.sp
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -163,8 +160,7 @@ private fun CategoriesSection(
     ) {
         Text(
             text = stringResource(R.string.home_title_categories),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 25.sp
+            style = MaterialTheme.typography.bodyLarge
         )
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -211,15 +207,17 @@ private fun CategoryCard(
                 }
                 Spacer(modifier = Modifier.width(19.dp))
                 Column {
-                    Text(text = category.name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = category.name,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                     Text(
                         text = stringResource(
                             R.string.home_category_number_question,
                             category.type,
                             category.quizCount
                         ),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -235,6 +233,8 @@ private fun CategoryCard(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    val viewModel = HomeViewModel()
-    HomeScreen(homeViewModel = viewModel)
+    MOBILEMASTERMINDTheme {
+        val viewModel = HomeViewModel()
+        HomeScreen(homeViewModel = viewModel)
+    }
 }

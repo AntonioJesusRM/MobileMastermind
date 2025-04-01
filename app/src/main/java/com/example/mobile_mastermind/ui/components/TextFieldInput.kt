@@ -3,6 +3,7 @@ package com.example.mobile_mastermind.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -15,9 +16,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mobile_mastermind.R
-import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.PlaceholderLight
 import com.example.mobile_mastermind.ui.theme.White
 
@@ -46,8 +45,7 @@ fun TextFieldInput(
     ) {
         Text(
             text = title,
-            fontSize = 14.sp,
-            color = Black,
+            style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         TextField(
@@ -56,7 +54,7 @@ fun TextFieldInput(
             placeholder = {
                 Text(
                     text = placeholder,
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = PlaceholderLight
                 )
             },

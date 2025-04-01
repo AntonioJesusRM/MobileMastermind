@@ -7,20 +7,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.PrimaryButton
 import com.example.mobile_mastermind.ui.components.TextClickable
 import com.example.mobile_mastermind.ui.components.TextFieldInput
+import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel = hiltViewModel()) {
@@ -38,8 +38,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel = hiltViewModel()) {
         ) {
             Text(
                 text = stringResource(R.string.register_title),
-                fontSize = 40.sp,
-                fontWeight = FontWeight.ExtraBold
+                style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(30.dp))
             TextFieldInput(
@@ -87,6 +86,8 @@ fun RegisterScreen(registerViewModel: RegisterViewModel = hiltViewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
-    val viewModel = RegisterViewModel()
-    RegisterScreen(registerViewModel = viewModel)
+    MOBILEMASTERMINDTheme {
+        val viewModel = RegisterViewModel()
+        RegisterScreen(registerViewModel = viewModel)
+    }
 }
