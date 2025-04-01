@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.RedLight
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +37,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
                         totalGames = 5,
                         correctAnswers = 45,
                         incorrectAnswers = 5,
-                        colorCategory = R.color.color_red
+                        colorCategory = RedLight
                     ),
                     CategoryStats(
                         title = "Android",
@@ -44,7 +46,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
                         totalGames = 10,
                         correctAnswers = 90,
                         incorrectAnswers = 10,
-                        colorCategory = R.color.color_green
+                        colorCategory = GreenLight
                     )
                 )
             )

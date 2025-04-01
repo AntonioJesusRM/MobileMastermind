@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.theme.Black
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun RankingScreen(
@@ -73,8 +75,7 @@ fun RankingScreen(
         TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
         Spacer(modifier = Modifier.height(14.dp))
         LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            state = listState, verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             items(items = uiState.globalRankings.drop(3)) { item ->
                 RankingCard(
@@ -96,7 +97,7 @@ fun TopRankingCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(0.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row(
@@ -137,8 +138,7 @@ private fun TopRankingItem(
     val backgroundColor = getBackgroundColor(position)
 
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (position == 1) {
             CrownIcon()
@@ -146,8 +146,7 @@ private fun TopRankingItem(
         }
 
         Box(
-            modifier = Modifier.size(size),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.size(size), contentAlignment = Alignment.Center
         ) {
             ProfileImage(imgUser, size, backgroundColor)
             MedalBadge(position, sizeMedalContainer, sizeMedal, backgroundColor)
@@ -164,8 +163,7 @@ private fun TopRankingItem(
 
         Text(
             text = stringResource(R.string.ranking_points, points),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -198,25 +196,18 @@ private fun MedalBadge(position: Int, sizeContainer: Dp, sizeMedal: Dp, backgrou
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
     ) {
         Box(
             modifier = Modifier
                 .size(sizeContainer)
                 .offset(y = sizeMedal / 2)
-                .background(backgroundColor, CircleShape),
-            contentAlignment = Alignment.Center
+                .background(backgroundColor, CircleShape), contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(imageMedal),
-                contentDescription = stringResource(
-                    R.string.ranking_medal_content_description,
-                    position
-                ),
-                modifier = Modifier.size(sizeMedal),
-                contentScale = ContentScale.Crop
+                painter = painterResource(imageMedal), contentDescription = stringResource(
+                    R.string.ranking_medal_content_description, position
+                ), modifier = Modifier.size(sizeMedal), contentScale = ContentScale.Crop
             )
         }
     }
@@ -251,12 +242,8 @@ private fun RankingCard(
             .padding(8.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (yourPosition) colorResource(R.color.color_green) else colorResource(
-                R.color.white
-            ),
-            contentColor = if (yourPosition) colorResource(R.color.white) else colorResource(
-                R.color.black
-            ),
+            containerColor = if (yourPosition) GreenLight else White,
+            contentColor = if (yourPosition) White else Black,
         )
     ) {
         Row(

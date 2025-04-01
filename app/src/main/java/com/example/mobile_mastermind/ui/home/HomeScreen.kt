@@ -26,9 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun HomeScreen(
@@ -117,7 +117,7 @@ private fun UserInfoSection(
 private fun LastGameCard(lastGame: LastGame) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.color_green)
+            containerColor = GreenLight
         )
     ) {
         Row(
@@ -139,13 +139,13 @@ private fun LastGameCard(lastGame: LastGame) {
                 Text(
                     text = stringResource(R.string.home_last_game_text),
                     fontWeight = FontWeight.Normal,
-                    color = Color.White,
+                    color = White,
                     fontSize = 20.sp
                 )
                 Text(
                     text = " " + stringResource(R.string.home_user_points, lastGame.points),
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = White,
                     fontSize = 20.sp
                 )
             }
@@ -186,7 +186,7 @@ private fun CategoryCard(
             .fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.white),
+            containerColor = White,
         ),
         onClick = onClick
     ) {
@@ -213,7 +213,11 @@ private fun CategoryCard(
                 Column {
                     Text(text = category.name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     Text(
-                        text = "${category.type} - ${category.quizCount} questions",
+                        text = stringResource(
+                            R.string.home_category_number_question,
+                            category.type,
+                            category.quizCount
+                        ),
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -222,7 +226,7 @@ private fun CategoryCard(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = stringResource(R.string.home_icon_arrow_content_description),
-                tint = colorResource(R.color.color_green)
+                tint = GreenLight
             )
         }
     }

@@ -36,6 +36,7 @@
     <string name="home_title_categories">Categorias</string>
     <string name="home_icon_arrow_content_description">"Icono flecha horizontal para ir hacia delante"</string>
     <string name="home_category_image_content_description">Imagen de la categoria</string>
+    <string name="home_category_number_question">%s - %d preguntas</string>
 
     <!-- String for Review -->
     <string name="review_button_done">Hecho</string>

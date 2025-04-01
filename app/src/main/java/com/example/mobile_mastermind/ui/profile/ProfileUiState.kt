@@ -1,5 +1,7 @@
 package com.example.mobile_mastermind.ui.profile
 
+import androidx.compose.ui.graphics.Color
+
 data class ProfileUiState(
     val name: String = "",
     val email: String = "",
@@ -17,7 +19,7 @@ data class CategoryStats(
     val totalGames: Int,
     val correctAnswers: Int,
     val incorrectAnswers: Int,
-    val colorCategory: Int
+    val colorCategory: Color
 )
 
 data class StatItem(
@@ -26,5 +28,5 @@ data class StatItem(
     val title: String,
     val value: Int? = null,
     val unit: String? = null,
-    val statColor: Int
+    val statColor: Color
 )

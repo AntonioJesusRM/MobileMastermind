@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,14 +39,12 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel()) {
             Text(
                 text = stringResource(R.string.app_name_first),
                 fontSize = 40.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.Black
+                fontWeight = FontWeight.ExtraBold
             )
             Text(
                 text = stringResource(R.string.app_name_second),
                 fontSize = 40.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.Black
+                fontWeight = FontWeight.ExtraBold
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextFieldInput(

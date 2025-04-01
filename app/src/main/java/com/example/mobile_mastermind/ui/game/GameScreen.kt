@@ -41,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +48,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.theme.BackgroundLight
+import com.example.mobile_mastermind.ui.theme.Black
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.PlaceholderLight
+import com.example.mobile_mastermind.ui.theme.RedLight
+import com.example.mobile_mastermind.ui.theme.White
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
@@ -72,7 +76,7 @@ fun GameScreen(gameViewModel: GameViewModel = hiltViewModel()) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Go back",
-            tint = colorResource(R.color.black),
+            tint = Black,
             modifier = Modifier.size(30.dp)
         )
 
@@ -124,9 +128,9 @@ private fun ProgressGame(
     ) {
         repeat(totalQuestions) { index ->
             val color = when {
-                index >= infoGame.size -> colorResource(R.color.color_placeholder)
-                infoGame[index] -> colorResource(R.color.color_green)
-                else -> colorResource(R.color.color_red)
+                index >= infoGame.size -> PlaceholderLight
+                infoGame[index] -> GreenLight
+                else -> RedLight
             }
 
             Box(
@@ -201,7 +205,7 @@ private fun TimerCard(
 
     Card(
         modifier = modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.color_background),
+            containerColor = BackgroundLight,
         )
     ) {
         Box(
@@ -271,13 +275,13 @@ private fun AnswerButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = when (isCorrect) {
-                true -> colorResource(R.color.color_green)
-                false -> colorResource(R.color.color_red)
-                else -> Color.White
+                true -> GreenLight
+                false -> RedLight
+                else -> White
             },
             contentColor = when (isCorrect) {
-                true -> Color.White
-                false -> Color.White
+                true -> White
+                false -> White
                 else -> Color.Black
             }
         ),
@@ -304,19 +308,19 @@ private fun AnswerButton(
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
                         contentDescription = "Correct Answer",
-                        tint = Color.White,
+                        tint = White,
                         modifier = Modifier.size(28.dp)
                     )
                 } else {
                     Surface(
                         shape = CircleShape,
-                        color = Color.White,
+                        color = White,
                         modifier = Modifier.size(28.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Incorrect Answer",
-                            tint = colorResource(R.color.color_red),
+                            tint = RedLight,
                             modifier = Modifier.size(26.dp)
                         )
                     }
@@ -336,7 +340,7 @@ private fun QuestionCard(
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
+        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Column(
             modifier = Modifier

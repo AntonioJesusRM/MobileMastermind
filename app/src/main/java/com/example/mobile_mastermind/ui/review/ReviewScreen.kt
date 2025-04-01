@@ -1,5 +1,6 @@
 package com.example.mobile_mastermind.ui.review
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,19 +20,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.PrimaryButton
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.RedLight
 
 @Composable
 fun ReviewScreen(
@@ -108,7 +109,7 @@ private fun AnswersCard(questions: List<QuestionResult>) {
             .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * 0.6f),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.white),
+            containerColor = MaterialTheme.colorScheme.onPrimary,
         )
     ) {
         LazyColumn(
@@ -137,26 +138,24 @@ private fun QuestionItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Question Number
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = if (question.isCorrect) colorResource(R.color.color_green)
-                    else colorResource(R.color.color_red),
+                    color = if (question.isCorrect) GreenLight
+                    else RedLight,
                     shape = CircleShape
                 )
         ) {
             Text(
                 text = "Q$questionNumber",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
         }
 
-        // Question Content
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -171,12 +170,11 @@ private fun QuestionItem(
                 text = question.userAnswer,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
-                color = if (question.isCorrect) colorResource(R.color.color_green)
-                else colorResource(R.color.color_red)
+                color = if (question.isCorrect) GreenLight
+                else RedLight
             )
         }
 
-        // Correct/Incorrect Indicator
         AnswerIndicator(
             isCorrect = question.isCorrect,
             size = IndicatorSize.MEDIUM
@@ -197,7 +195,7 @@ fun ResultCard(
             .padding(8.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.white),
+            containerColor = MaterialTheme.colorScheme.onPrimary,
         )
     ) {
         Column(
@@ -277,22 +275,15 @@ private fun AnswerIndicator(
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = stringResource(R.string.review_correct_content_description),
-                    tint = colorResource(R.color.color_green),
+                    tint = GreenLight,
                     modifier = Modifier.size(40.dp)
                 )
             } else {
-                Surface(
-                    shape = CircleShape,
-                    color = colorResource(R.color.color_red),
-                    modifier = Modifier.size(34.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(R.string.review_incorrect_content_description),
-                        tint = Color.White,
-                        modifier = Modifier.size(36.dp)
-                    )
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.error_icon),
+                    contentDescription = stringResource(R.string.review_incorrect_content_description),
+                    modifier = Modifier.size(40.dp)
+                )
             }
         }
 
@@ -301,22 +292,15 @@ private fun AnswerIndicator(
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = stringResource(R.string.review_correct_content_description),
-                    tint = colorResource(R.color.color_green),
+                    tint = GreenLight,
                     modifier = Modifier.size(24.dp)
                 )
             } else {
-                Surface(
-                    shape = CircleShape,
-                    color = colorResource(R.color.color_red),
+                Image(
+                    painter = painterResource(id = R.drawable.error_icon),
+                    contentDescription = stringResource(R.string.review_incorrect_content_description),
                     modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(R.string.review_incorrect_content_description),
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+                )
             }
         }
     }

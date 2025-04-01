@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.theme.BackgroundLight
+import com.example.mobile_mastermind.ui.theme.GoldLight
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.PlaceholderLight
+import com.example.mobile_mastermind.ui.theme.RedLight
+import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
@@ -72,7 +77,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
 private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>) {
     Card(
         modifier = modifier.fillMaxSize(),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         if (stats.isEmpty()) {
@@ -158,9 +163,8 @@ private fun StatCard(stat: StatItem) {
             .height(170.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (stat.statImg == null) colorResource(
-                stat.statColor
-            ) else colorResource(R.color.color_background)
+            containerColor = if (stat.statImg == null) stat.statColor
+            else BackgroundLight
         )
     ) {
         Column(
@@ -203,7 +207,7 @@ private fun StatCard(stat: StatItem) {
 
 @Composable
 private fun PutImage(
-    imgBackground: Int?, img: Int, color: Int
+    imgBackground: Int?, img: Int, color: Color
 ) {
     Box(modifier = Modifier.size(60.dp)) {
         if (imgBackground != null) {
@@ -211,7 +215,7 @@ private fun PutImage(
                 painter = painterResource(imgBackground),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                colorFilter = ColorFilter.tint(colorResource(color), BlendMode.SrcIn)
+                colorFilter = ColorFilter.tint(color, BlendMode.SrcIn)
             )
 
             Image(
@@ -224,7 +228,7 @@ private fun PutImage(
                 painter = painterResource(img),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                colorFilter = ColorFilter.tint(colorResource(color), BlendMode.SrcIn)
+                colorFilter = ColorFilter.tint(color, BlendMode.SrcIn)
             )
         }
     }
@@ -238,7 +242,7 @@ private fun DataCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(15.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Row(
             modifier = Modifier
@@ -251,7 +255,7 @@ private fun DataCard(
                 stringResource(R.string.profile_points_title),
                 points,
                 R.drawable.points_icon,
-                colorResource(R.color.color_red)
+                RedLight
             )
             DividerBox()
             ProfileStatItem(
@@ -259,7 +263,7 @@ private fun DataCard(
                 stringResource(R.string.profile_best_score_title),
                 bestScore,
                 R.drawable.best_score_icon,
-                colorResource(R.color.color_green)
+                GreenLight
             )
             DividerBox()
             ProfileStatItem(
@@ -267,7 +271,7 @@ private fun DataCard(
                 stringResource(R.string.profile_ranking_title),
                 ranking,
                 R.drawable.ranking_icon,
-                colorResource(R.color.gold700)
+                GoldLight
             )
         }
     }
@@ -279,7 +283,7 @@ private fun DividerBox() {
         modifier = Modifier
             .height(40.dp)
             .width(1.dp)
-            .background(colorResource(R.color.color_placeholder))
+            .background(PlaceholderLight)
     )
 }
 
@@ -303,8 +307,7 @@ private fun ProfileStatItem(
 
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodySmall
         )
 
         Text(
@@ -323,7 +326,7 @@ private fun ProfileCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(24.dp, 0.dp), colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.color_background),
+            containerColor = BackgroundLight,
         )
     ) {
         Box(
