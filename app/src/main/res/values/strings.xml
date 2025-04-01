@@ -53,5 +53,22 @@
     <string name="ranking_crown_content_description">Corona</string>
     <string name="ranking_points">%d puntos</string>
 
+    <!-- String for Profile -->
+    <string name="profile_icon_content_description">Ajustes</string>
+    <string name="profile_user_content_description">Usuario</string>
+    <string name="profile_stat_icon_constent_description">Icono de stat</string>
+    <string name="profile_points_title">Puntos</string>
+    <string name="profile_best_score_title">Mejor puntuación</string>
+    <string name="profile_ranking_title">Clasificación</string>
+    <string name="profile_title_stats">Estadisticas</string>
+    <string name="profile_stat_best_score">Mejor puntuación</string>
+    <string name="profile_stat_unit">pts</string>
+    <string name="ranking_category_title">%s scores</string>
+    <string name="profile_stat_best_question">Mejor pregunta</string>
+    <string name="profile_stat_total_games">Total de partidas</string>
+    <string name="profile_stat_correct_answers">Preguntas correctas</string>
+    <string name="profile_stat_incorrect_answers">Preguntas falladas</string>
+    <string name="profile_empty_stats">Aun no tienes estadisticas</string>
+
 
 </resources>
