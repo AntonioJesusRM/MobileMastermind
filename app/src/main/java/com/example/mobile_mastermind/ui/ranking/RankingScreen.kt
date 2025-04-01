@@ -30,17 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.theme.Black
+import com.example.mobile_mastermind.ui.theme.GreenLight
+import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
+import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun RankingScreen(
@@ -66,15 +67,13 @@ fun RankingScreen(
     ) {
         Text(
             text = stringResource(R.string.ranking_title),
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(22.dp))
         TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
         Spacer(modifier = Modifier.height(14.dp))
         LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            state = listState, verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             items(items = uiState.globalRankings.drop(3)) { item ->
                 RankingCard(
@@ -96,7 +95,7 @@ fun TopRankingCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(0.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row(
@@ -137,8 +136,7 @@ private fun TopRankingItem(
     val backgroundColor = getBackgroundColor(position)
 
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (position == 1) {
             CrownIcon()
@@ -146,8 +144,7 @@ private fun TopRankingItem(
         }
 
         Box(
-            modifier = Modifier.size(size),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.size(size), contentAlignment = Alignment.Center
         ) {
             ProfileImage(imgUser, size, backgroundColor)
             MedalBadge(position, sizeMedalContainer, sizeMedal, backgroundColor)
@@ -157,15 +154,13 @@ private fun TopRankingItem(
 
         Text(
             text = name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
 
         Text(
             text = stringResource(R.string.ranking_points, points),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -198,25 +193,18 @@ private fun MedalBadge(position: Int, sizeContainer: Dp, sizeMedal: Dp, backgrou
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
     ) {
         Box(
             modifier = Modifier
                 .size(sizeContainer)
                 .offset(y = sizeMedal / 2)
-                .background(backgroundColor, CircleShape),
-            contentAlignment = Alignment.Center
+                .background(backgroundColor, CircleShape), contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(imageMedal),
-                contentDescription = stringResource(
-                    R.string.ranking_medal_content_description,
-                    position
-                ),
-                modifier = Modifier.size(sizeMedal),
-                contentScale = ContentScale.Crop
+                painter = painterResource(imageMedal), contentDescription = stringResource(
+                    R.string.ranking_medal_content_description, position
+                ), modifier = Modifier.size(sizeMedal), contentScale = ContentScale.Crop
             )
         }
     }
@@ -251,12 +239,8 @@ private fun RankingCard(
             .padding(8.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (yourPosition) colorResource(R.color.color_green) else colorResource(
-                R.color.white
-            ),
-            contentColor = if (yourPosition) colorResource(R.color.white) else colorResource(
-                R.color.black
-            ),
+            containerColor = if (yourPosition) GreenLight else White,
+            contentColor = if (yourPosition) White else Black,
         )
     ) {
         Row(
@@ -270,7 +254,9 @@ private fun RankingCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "$position", fontSize = 20.sp, modifier = Modifier.width(30.dp)
+                    text = "$position",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.width(30.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
@@ -281,12 +267,13 @@ private fun RankingCard(
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = if (yourPosition) stringResource(R.string.ranking_your_position) else playerName,
-                    fontSize = 20.sp
+                    style = MaterialTheme.typography.titleSmall
                 )
             }
 
             Text(
-                text = stringResource(R.string.ranking_points, score), fontSize = 15.sp
+                text = stringResource(R.string.ranking_points, score),
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -295,6 +282,8 @@ private fun RankingCard(
 @Preview(showBackground = true)
 @Composable
 fun RankingScreenPreview() {
-    val viewModel = RankingViewModel()
-    RankingScreen(rankingViewModel = viewModel)
+    MOBILEMASTERMINDTheme {
+        val viewModel = RankingViewModel()
+        RankingScreen(rankingViewModel = viewModel)
+    }
 }
