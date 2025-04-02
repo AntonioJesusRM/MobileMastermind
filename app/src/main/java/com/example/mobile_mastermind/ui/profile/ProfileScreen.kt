@@ -18,11 +18,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -122,7 +119,7 @@ private fun StatCategoryItem(category: CategoryStats) {
             statColor = category.colorCategory
         ),
         StatItem(
-            statImg = R.drawable.stat_total_games_item,
+            statBackground = R.drawable.stat_total_games_item,
             title = stringResource(R.string.profile_stat_total_games),
             value = category.totalGames,
             unit = "",
@@ -160,7 +157,7 @@ private fun StatCard(stat: StatItem) {
             .height(170.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (stat.statImg == null) stat.statColor
+            containerColor = if (stat.statBackground == null) stat.statColor
             else BackgroundLight
         )
     ) {
@@ -170,7 +167,7 @@ private fun StatCard(stat: StatItem) {
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (stat.statImg != null) {
+            if (stat.statBackground != null) {
                 PutImage(stat.statBackground, stat.statImg, stat.statColor)
                 Spacer(modifier = Modifier.height(14.dp))
                 Text(
@@ -201,28 +198,21 @@ private fun StatCard(stat: StatItem) {
 
 @Composable
 private fun PutImage(
-    imgBackground: Int?, img: Int, color: Color
+    imgBackground: Int, img: Int?, color: Color
 ) {
     Box(modifier = Modifier.size(60.dp)) {
-        if (imgBackground != null) {
-            Image(
-                painter = painterResource(imgBackground),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                colorFilter = ColorFilter.tint(color, BlendMode.SrcIn)
-            )
+        Image(
+            painter = painterResource(imgBackground),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            colorFilter = ColorFilter.tint(color, BlendMode.SrcIn)
+        )
 
+        img?.let {
             Image(
-                painter = painterResource(img),
+                painter = painterResource(it),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            Image(
-                painter = painterResource(img),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                colorFilter = ColorFilter.tint(color, BlendMode.SrcIn)
             )
         }
     }
@@ -301,7 +291,8 @@ private fun ProfileStatItem(
 
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
         )
 
         Text(
@@ -352,12 +343,6 @@ private fun ProfileCard(
                     )
                 }
             }
-            Icon(
-                imageVector = Icons.Outlined.Settings,
-                contentDescription = stringResource(R.string.profile_icon_content_description),
-                modifier = Modifier.align(Alignment.TopEnd),
-                tint = Color.Black
-            )
         }
     }
 }
