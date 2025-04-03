@@ -16,6 +16,8 @@ import com.example.mobile_mastermind.ui.theme.GreenLight
  *
  * @param previousText The non-clickable text before the clickable part.
  * @param textClickable The clickable text.
+ * @param enabled If `true`, the clickable text will respond to clicks and trigger `onClick`.
+ *               If `false`, the text will appear non-interactive.
  * @param laterText The non-clickable text after the clickable part (optional).
  * @param onClick The callback to be invoked when the clickable text is clicked.
  */
@@ -23,6 +25,7 @@ import com.example.mobile_mastermind.ui.theme.GreenLight
 fun TextClickable(
     previousText: String,
     textClickable: String,
+    enabled: Boolean = true,
     laterText: String? = null,
     onClick: () -> Unit
 ) {
@@ -36,7 +39,7 @@ fun TextClickable(
             text = " $textClickable",
             style = MaterialTheme.typography.bodyLarge,
             color = GreenLight,
-            modifier = Modifier.clickable { onClick() }
+            modifier = if (enabled) Modifier.clickable { onClick() } else Modifier
         )
 
         if (!laterText.isNullOrEmpty()) {
@@ -54,6 +57,7 @@ fun TextClickablePreview() {
     TextClickable(
         previousText = stringResource(id = R.string.login_forgot_password),
         textClickable = stringResource(id = R.string.login_forgot_password_clickable),
-        laterText = "?"
+        laterText = "?",
+        enabled = false
     ) {}
 }

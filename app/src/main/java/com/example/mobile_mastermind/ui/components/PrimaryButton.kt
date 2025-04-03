@@ -21,6 +21,8 @@ import com.example.mobile_mastermind.ui.theme.White
  *
  * @param text The text to display on the button.
  * @param onClick The callback to be invoked when the button is clicked.
+ * @param enabled If `true`, the clickable text will respond to clicks and trigger `onClick`.
+ *               If `false`, the text will appear non-interactive.
  * @param modifier The modifier to be applied to the button.
  * @param backgroundColor The background color of the button. Defaults to green.
  * @param contentColor The color of the text inside the button. Defaults to white.
@@ -28,15 +30,17 @@ import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun PrimaryButton(
+    modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     backgroundColor: Color = GreenLight,
     contentColor: Color = White
 ) {
     Button(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
+        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColor
@@ -56,6 +60,7 @@ fun PrimaryButtonPreview() {
     PrimaryButton(
         text = stringResource(id = R.string.login_button),
         onClick = {},
+        enabled = false,
         modifier = Modifier
     )
 }

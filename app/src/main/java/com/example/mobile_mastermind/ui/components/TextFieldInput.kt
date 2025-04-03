@@ -25,6 +25,8 @@ import com.example.mobile_mastermind.ui.theme.White
  *
  * @param value The current value of the text field, represented as a [MutableState].
  * @param title The title to display above the text field.
+ * @param enabled If `true`, the clickable text will respond to clicks and trigger `onClick`.
+ *                If `false`, the text will appear non-interactive.
  * @param placeholder The placeholder text to display when the field is empty.
  * @param modifier The modifier to be applied to the text field.
  * @param onValueChange The callback to be invoked when the text value changes.
@@ -32,10 +34,11 @@ import com.example.mobile_mastermind.ui.theme.White
  */
 @Composable
 fun TextFieldInput(
+    modifier: Modifier = Modifier,
     value: String,
     title: String,
+    enabled: Boolean = true,
     placeholder: String,
-    modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
     isPassword: Boolean = false
 ) {
@@ -51,6 +54,7 @@ fun TextFieldInput(
         TextField(
             value = value,
             onValueChange = onValueChange,
+            enabled = enabled,
             placeholder = {
                 Text(
                     text = placeholder,
@@ -78,6 +82,7 @@ fun TextFieldInputPreview() {
         value = "",
         onValueChange = {},
         title = stringResource(id = R.string.username),
+        enabled = true,
         placeholder = stringResource(id = R.string.login_username_placeholder)
     )
 }
