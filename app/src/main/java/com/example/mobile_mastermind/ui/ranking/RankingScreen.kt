@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,8 +50,7 @@ import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun RankingScreen(
-    navController: NavController,
-    rankingViewModel: RankingViewModel = hiltViewModel()
+    navController: NavController, rankingViewModel: RankingViewModel = hiltViewModel()
 ) {
     val uiState = rankingViewModel.uiState.value
     when {
@@ -77,7 +77,7 @@ fun RankingScreen(
             Scaffold(
                 bottomBar = { BottomNav(navController) }) { padding ->
                 RankingBody(
-                    uiState = uiState, modifier = Modifier.padding(padding)
+                    uiState = uiState, marginBot = padding.calculateBottomPadding()
                 )
             }
         }
@@ -86,7 +86,7 @@ fun RankingScreen(
 }
 
 @Composable
-fun RankingBody(modifier: Modifier, uiState: RankingUiState) {
+fun RankingBody(marginBot: Dp, uiState: RankingUiState) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(uiState.globalRankings.isNotEmpty(), uiState.myPosition) {
@@ -100,7 +100,7 @@ fun RankingBody(modifier: Modifier, uiState: RankingUiState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(0.dp, 42.dp),
+            .padding(top = 42.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -115,7 +115,7 @@ fun RankingBody(modifier: Modifier, uiState: RankingUiState) {
         Spacer(modifier = Modifier.height(14.dp))
 
         LazyColumn(
-            modifier = modifier,
+            contentPadding = PaddingValues(bottom = marginBot),
             state = listState,
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {

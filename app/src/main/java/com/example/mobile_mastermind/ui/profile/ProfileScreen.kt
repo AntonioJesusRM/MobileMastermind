@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,16 +30,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.BottomNav
 import com.example.mobile_mastermind.ui.extension.PutImage
+import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.GoldLight
 import com.example.mobile_mastermind.ui.theme.GreenLight
@@ -47,37 +53,68 @@ import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun ProfileScreen(
-    navController: NavController,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    navController: NavController, profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState = profileViewModel.uiState.value
-    Scaffold(
-        bottomBar = { BottomNav(navController) }) { padding ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp, 25.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ProfileCard(modifier = Modifier, uiState.profileImg, uiState.name, uiState.email)
-            Spacer(modifier = Modifier.height(11.dp))
-            DataCard(modifier = Modifier, uiState.points, uiState.bestScore, uiState.ranking)
-            Spacer(modifier = Modifier.height(13.dp))
-            Text(
-                text = stringResource(R.string.profile_title_stats),
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            StatsCard(modifier = Modifier, uiState.stats)
+    when {
+        uiState.isLoading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(White),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        uiState.errorMessage != null -> {
+            ErrorScreen(message = uiState.errorMessage) {
+                navController.navigate(Login.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+
+        else -> {
+            Scaffold(
+                bottomBar = { BottomNav(navController) }) { padding ->
+                ProfileBody(
+                    uiState = uiState, marginBot = padding.calculateBottomPadding()
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>) {
+private fun ProfileBody(uiState: ProfileUiState, marginBot: Dp) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp, 25.dp, 0.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        ProfileCard(modifier = Modifier, uiState.profileImg, uiState.name, uiState.email)
+        Spacer(modifier = Modifier.height(11.dp))
+        DataCard(modifier = Modifier, uiState.points, uiState.bestScore, uiState.ranking)
+        Spacer(modifier = Modifier.height(13.dp))
+        Text(
+            text = stringResource(R.string.profile_title_stats),
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(modifier = Modifier.height(15.dp))
+        StatsCard(modifier = Modifier, uiState.stats, marginBot)
+    }
+}
+
+@Composable
+private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>, marginBot: Dp) {
     Card(
-        modifier = modifier.fillMaxSize(), colors = CardDefaults.cardColors(containerColor = White)
+        modifier = modifier.fillMaxSize(),
+        colors = CardDefaults.cardColors(containerColor = White),
+        shape = RectangleShape
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         if (stats.isEmpty()) {
@@ -91,12 +128,11 @@ private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>)
             }
         } else {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(13.dp)
+                verticalArrangement = Arrangement.spacedBy(13.dp),
+                contentPadding = PaddingValues(bottom = marginBot)
             ) {
                 items(items = stats) { category ->
-                    StatCategoryItem(
-                        category = category
-                    )
+                    StatCategoryItem(category = category)
                 }
             }
         }

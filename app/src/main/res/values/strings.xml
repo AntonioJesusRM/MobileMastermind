@@ -9,7 +9,7 @@
 
     <!-- String Bottom bar -->
     <string name="BottomBar_home_label">Inicio</string>
-    <string name="BottomBar_ranking_label">Estadisticas</string>
+    <string name="BottomBar_ranking_label">Clasificación</string>
     <string name="BottomBar_profile_label">Perfil</string>
 
     <!-- Strings for Login -->

@@ -39,7 +39,10 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                             10,
                             R.drawable.ic_launcher_foreground
                         ),
-                        Category("4", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground)
+                        Category("4", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
+                        Category("5", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
+                        Category("6", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
+                        Category("7", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground)
                     )
                 )
             } catch (e: Exception) {

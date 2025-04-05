@@ -3,6 +3,8 @@ package com.example.mobile_mastermind.ui.profile
 import androidx.compose.ui.graphics.Color
 
 data class ProfileUiState(
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
     val name: String = "",
     val email: String = "",
     val profileImg: Int? = null,

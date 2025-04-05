@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -53,13 +54,14 @@ fun BottomNav(navController: NavController) {
                             PutImage(
                                 imgBackground = item.icon,
                                 color = if (isSelected) White else PlaceholderLight,
-                                size = 30,
+                                size = 20,
                                 img = null
                             )
                             if (isSelected) {
-                                Spacer(modifier = Modifier.width(6.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = item.label, color = Color.White
+                                    text = item.label, color = Color.White, maxLines = 1,
+                                    style = MaterialTheme.typography.bodySmall
                                 )
                             }
                         }

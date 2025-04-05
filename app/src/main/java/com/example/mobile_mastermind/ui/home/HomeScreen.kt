@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -79,7 +81,7 @@ fun HomeScreen(
                 HomeBody(
                     navController = navController,
                     uiState = uiState,
-                    modifier = Modifier.padding(padding)
+                    marginBot = padding.calculateBottomPadding()
                 )
             }
         }
@@ -87,11 +89,11 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeBody(modifier: Modifier, navController: NavController, uiState: HomeUiState) {
+private fun HomeBody(navController: NavController, uiState: HomeUiState, marginBot: Dp) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(31.dp)
     ) {
         UserInfoSection(
@@ -100,12 +102,11 @@ private fun HomeBody(modifier: Modifier, navController: NavController, uiState: 
             points = uiState.points,
             lastGame = uiState.lastGame
         )
-        CategoriesSection(
-            modifier, categories = uiState.categories, onCategoryClick = {
-                navController.navigate(Game.route, navOptions {
-                    popUpTo(Login.route) { inclusive = false }
-                })
+        CategoriesSection(categories = uiState.categories, marginBot, onCategoryClick = {
+            navController.navigate(Game.route, navOptions {
+                popUpTo(Login.route) { inclusive = false }
             })
+        })
     }
 }
 
@@ -198,7 +199,7 @@ private fun LastGameCard(lastGame: LastGame) {
 
 @Composable
 private fun CategoriesSection(
-    modifier: Modifier, categories: List<Category>, onCategoryClick: (String) -> Unit
+    categories: List<Category>, marginBot: Dp, onCategoryClick: (String) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -208,7 +209,8 @@ private fun CategoriesSection(
             style = MaterialTheme.typography.bodyLarge
         )
         LazyColumn(
-            modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(bottom = marginBot)
         ) {
             items(items = categories) { category ->
                 CategoryCard(

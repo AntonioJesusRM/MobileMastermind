@@ -8,6 +8,7 @@ import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.theme.GreenLight
 import com.example.mobile_mastermind.ui.theme.RedLight
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,39 +18,48 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
     val uiState: State<ProfileUiState> = _uiState
 
     init {
-        loadProfile()
+        loadData()
     }
 
-    private fun loadProfile() {
+    private fun loadData() {
+        _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
-            _uiState.value = ProfileUiState(
-                profileImg = R.drawable.ic_launcher_foreground,
-                name = "Andrés",
-                email = "andres@gmail.com",
-                points = 300,
-                bestScore = 300,
-                ranking = 13,
-                stats = listOf(
-                    CategoryStats(
-                        title = "Kotlin",
-                        bestScore = 200,
-                        bestQuestion = 82,
-                        totalGames = 5,
-                        correctAnswers = 45,
-                        incorrectAnswers = 5,
-                        colorCategory = RedLight
-                    ),
-                    CategoryStats(
-                        title = "Android",
-                        bestScore = 400,
-                        bestQuestion = 152,
-                        totalGames = 10,
-                        correctAnswers = 90,
-                        incorrectAnswers = 10,
-                        colorCategory = GreenLight
+            try {
+                delay(2000)
+                _uiState.value = ProfileUiState(
+                    profileImg = R.drawable.ic_launcher_foreground,
+                    name = "Andrés",
+                    email = "andres@gmail.com",
+                    points = 300,
+                    bestScore = 300,
+                    ranking = 13,
+                    stats = listOf(
+                        CategoryStats(
+                            title = "Kotlin",
+                            bestScore = 200,
+                            bestQuestion = 82,
+                            totalGames = 5,
+                            correctAnswers = 45,
+                            incorrectAnswers = 5,
+                            colorCategory = RedLight
+                        ),
+                        CategoryStats(
+                            title = "Android",
+                            bestScore = 400,
+                            bestQuestion = 152,
+                            totalGames = 10,
+                            correctAnswers = 90,
+                            incorrectAnswers = 10,
+                            colorCategory = GreenLight
+                        )
                     )
                 )
-            )
+            } catch (e: Exception) {
+                _uiState.value =
+                    _uiState.value.copy(errorMessage = e.localizedMessage ?: "Error desconocido")
+            } finally {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
         }
     }
 }
