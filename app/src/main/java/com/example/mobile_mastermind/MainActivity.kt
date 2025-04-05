@@ -33,5 +33,5 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MobileMastermind() {
     val navController = rememberNavController()
-    MainNavHost(navController = navController, startDestination = Login.route)
+    MainNavHost(navController = navController, startDestination = Home.route)
 }

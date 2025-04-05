@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,8 +39,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -47,10 +50,43 @@ import com.example.mobile_mastermind.ui.theme.White
 @Composable
 fun RankingScreen(
     navController: NavController,
-    modifier: Modifier = Modifier,
     rankingViewModel: RankingViewModel = hiltViewModel()
 ) {
     val uiState = rankingViewModel.uiState.value
+    when {
+        uiState.isLoading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(White),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        uiState.errorMessage != null -> {
+            ErrorScreen(message = uiState.errorMessage) {
+                navController.navigate(Login.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+
+        else -> {
+            Scaffold(
+                bottomBar = { BottomNav(navController) }) { padding ->
+                RankingBody(
+                    uiState = uiState, modifier = Modifier.padding(padding)
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun RankingBody(modifier: Modifier, uiState: RankingUiState) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(uiState.globalRankings.isNotEmpty(), uiState.myPosition) {
@@ -61,33 +97,36 @@ fun RankingScreen(
             )
         }
     }
-    Scaffold(
-        bottomBar = { BottomNav(navController) }) { padding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(0.dp, 42.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp, 42.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.ranking_title),
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        Spacer(modifier = Modifier.height(22.dp))
+
+        TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        LazyColumn(
+            modifier = modifier,
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Text(
-                text = stringResource(R.string.ranking_title),
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.height(22.dp))
-            TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
-            Spacer(modifier = Modifier.height(14.dp))
-            LazyColumn(
-                state = listState, verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                items(items = uiState.globalRankings.drop(3)) { item ->
-                    RankingCard(
-                        imageRes = item.userImg,
-                        position = uiState.globalRankings.indexOf(item) + 1,
-                        playerName = item.name,
-                        score = item.points,
-                        yourPosition = uiState.myPosition == uiState.globalRankings.indexOf(item) + 1
-                    )
-                }
+            items(items = uiState.globalRankings.drop(3)) { item ->
+                RankingCard(
+                    imageRes = item.userImg,
+                    position = uiState.globalRankings.indexOf(item) + 1,
+                    playerName = item.name,
+                    score = item.points,
+                    yourPosition = uiState.myPosition == uiState.globalRankings.indexOf(item) + 1
+                )
             }
         }
     }
