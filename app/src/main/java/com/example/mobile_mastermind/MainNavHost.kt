@@ -37,7 +37,7 @@ fun MainNavHost(
             LoginScreen(navController)
         }
         composable(route = Home.route) {
-            HomeScreen()
+            HomeScreen(navController)
         }
         composable(route = Game.route) {
             GameScreen()
@@ -46,10 +46,10 @@ fun MainNavHost(
             ReviewScreen()
         }
         composable(route = Ranking.route) {
-            RankingScreen()
+            RankingScreen(navController)
         }
         composable(route = Profile.route) {
-            ProfileScreen()
+            ProfileScreen(navController)
         }
     }
 }

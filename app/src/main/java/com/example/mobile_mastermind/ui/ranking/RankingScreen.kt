@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,19 +34,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.components.BottomNav
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
-import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun RankingScreen(
-    modifier: Modifier = Modifier, rankingViewModel: RankingViewModel = hiltViewModel()
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    rankingViewModel: RankingViewModel = hiltViewModel()
 ) {
     val uiState = rankingViewModel.uiState.value
     val listState = rememberLazyListState()
@@ -58,31 +61,33 @@ fun RankingScreen(
             )
         }
     }
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(0.dp, 42.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.ranking_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(modifier = Modifier.height(22.dp))
-        TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
-        Spacer(modifier = Modifier.height(14.dp))
-        LazyColumn(
-            state = listState, verticalArrangement = Arrangement.spacedBy(14.dp)
+    Scaffold(
+        bottomBar = { BottomNav(navController) }) { padding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(0.dp, 42.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(items = uiState.globalRankings.drop(3)) { item ->
-                RankingCard(
-                    imageRes = item.userImg,
-                    position = uiState.globalRankings.indexOf(item) + 1,
-                    playerName = item.name,
-                    score = item.points,
-                    yourPosition = uiState.myPosition == uiState.globalRankings.indexOf(item) + 1
-                )
+            Text(
+                text = stringResource(R.string.ranking_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(22.dp))
+            TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
+            Spacer(modifier = Modifier.height(14.dp))
+            LazyColumn(
+                state = listState, verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                items(items = uiState.globalRankings.drop(3)) { item ->
+                    RankingCard(
+                        imageRes = item.userImg,
+                        position = uiState.globalRankings.indexOf(item) + 1,
+                        playerName = item.name,
+                        score = item.points,
+                        yourPosition = uiState.myPosition == uiState.globalRankings.indexOf(item) + 1
+                    )
+                }
             }
         }
     }
@@ -153,9 +158,7 @@ private fun TopRankingItem(
         Spacer(modifier = Modifier.height(14.dp))
 
         Text(
-            text = name,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
+            text = name, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center
         )
 
         Text(
@@ -276,14 +279,5 @@ private fun RankingCard(
                 style = MaterialTheme.typography.bodySmall
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RankingScreenPreview() {
-    MOBILEMASTERMINDTheme {
-        val viewModel = RankingViewModel()
-        RankingScreen(rankingViewModel = viewModel)
     }
 }
