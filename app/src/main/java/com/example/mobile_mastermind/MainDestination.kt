@@ -17,7 +17,8 @@ data object Home : MainDestination {
 }
 
 data object Game : MainDestination {
-    override val route = "game"
+    override val route = "game/{categoryId}"
+    fun createRoute(categoryId: Int) = "game/$categoryId"
 }
 
 data object Review : MainDestination {

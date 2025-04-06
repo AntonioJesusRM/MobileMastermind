@@ -30,19 +30,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                     userImg = R.drawable.ic_launcher_foreground,
                     lastGame = LastGame(1, R.drawable.ic_launcher_foreground, 200),
                     categories = listOf(
-                        Category("1", "Kotlin", "Language", 10, R.drawable.ic_launcher_foreground),
-                        Category("2", "Swift", "Language", 10, R.drawable.ic_launcher_foreground),
+                        Category(1, "Kotlin", "Language", 10, R.drawable.ic_launcher_foreground),
+                        Category(2, "Swift", "Language", 10, R.drawable.ic_launcher_foreground),
                         Category(
-                            "3",
-                            "Android Studio",
-                            "IDE",
-                            10,
-                            R.drawable.ic_launcher_foreground
+                            3, "Android Studio", "IDE", 10, R.drawable.ic_launcher_foreground
                         ),
-                        Category("4", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
-                        Category("5", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
-                        Category("6", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
-                        Category("7", "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground)
+                        Category(4, "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
                     )
                 )
             } catch (e: Exception) {

@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -38,7 +36,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
 import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
@@ -102,11 +99,12 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
             points = uiState.points,
             lastGame = uiState.lastGame
         )
-        CategoriesSection(categories = uiState.categories, marginBot, onCategoryClick = {
-            navController.navigate(Game.route, navOptions {
-                popUpTo(Login.route) { inclusive = false }
+        CategoriesSection(
+            categories = uiState.categories,
+            marginBot,
+            onCategoryClick = { categoryId ->
+                navController.navigate(Game.createRoute(categoryId = categoryId))
             })
-        })
     }
 }
 
@@ -118,7 +116,9 @@ private fun UserInfoSection(
         verticalArrangement = Arrangement.spacedBy(31.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 38.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -179,13 +179,14 @@ private fun LastGameCard(lastGame: LastGame) {
                     contentScale = ContentScale.Crop
                 )
             }
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Text(
                     text = stringResource(R.string.home_last_game_text),
                     color = White,
                     style = MaterialTheme.typography.titleSmall
                 )
-                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = " " + stringResource(R.string.home_user_points, lastGame.points),
                     color = White,
@@ -199,7 +200,7 @@ private fun LastGameCard(lastGame: LastGame) {
 
 @Composable
 private fun CategoriesSection(
-    categories: List<Category>, marginBot: Dp, onCategoryClick: (String) -> Unit
+    categories: List<Category>, marginBot: Dp, onCategoryClick: (Int) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -239,6 +240,7 @@ private fun CategoryCard(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(19.dp)
             ) {
                 Box(
                     modifier = Modifier.size(107.dp), contentAlignment = Alignment.Center
@@ -250,7 +252,6 @@ private fun CategoryCard(
                         contentScale = ContentScale.Crop
                     )
                 }
-                Spacer(modifier = Modifier.width(19.dp))
                 Column {
                     Text(
                         text = category.name, style = MaterialTheme.typography.bodyLarge

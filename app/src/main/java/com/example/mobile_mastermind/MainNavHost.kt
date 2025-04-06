@@ -5,8 +5,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.mobile_mastermind.ui.game.GameScreen
 import com.example.mobile_mastermind.ui.home.HomeScreen
 import com.example.mobile_mastermind.ui.login.LoginScreen
@@ -39,8 +41,12 @@ fun MainNavHost(
         composable(route = Home.route) {
             HomeScreen(navController)
         }
-        composable(route = Game.route) {
-            GameScreen()
+        composable(
+            route = Game.route,
+            arguments = listOf(navArgument("categoryId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: 0
+            GameScreen(categoryId = categoryId, navController)
         }
         composable(route = Review.route) {
             ReviewScreen()

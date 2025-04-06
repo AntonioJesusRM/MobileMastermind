@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             MOBILEMASTERMINDTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = BackgroundLight
                 ) {
                     MobileMastermind()
                 }
@@ -33,5 +33,5 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MobileMastermind() {
     val navController = rememberNavController()
-    MainNavHost(navController = navController, startDestination = Login.route)
+    MainNavHost(navController = navController, startDestination = Home.route)
 }
