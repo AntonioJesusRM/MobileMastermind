@@ -108,6 +108,7 @@ private fun GameBody(
     }
 
     var isAnswerSelected by remember { mutableStateOf(false) }
+    var timeOut by remember { mutableStateOf(false) }
     var selectedAnswerId by remember { mutableStateOf<Int?>(null) }
 
     Column(
@@ -134,6 +135,7 @@ private fun GameBody(
                 totalQuestions = uiState.questions.size,
                 onTimeOut = {
                     gameViewModel.timeOut(currentQuestion)
+                    timeOut = true
                 },
                 isAnswerSelected = isAnswerSelected
             )
@@ -160,11 +162,12 @@ private fun GameBody(
             }
         }
     }
-    if (isAnswerSelected) {
-        LaunchedEffect(selectedAnswerId) {
+    if (isAnswerSelected || timeOut) {
+        LaunchedEffect(selectedAnswerId, timeOut) {
             delay(1000)
             gameViewModel.loadNextQuestion()
             isAnswerSelected = false
+            timeOut = false
         }
     }
 }

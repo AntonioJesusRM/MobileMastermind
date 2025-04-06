@@ -141,10 +141,6 @@ class GameViewModel @Inject constructor() : ViewModel() {
             score = _uiState.value.score,
             questions = updatedQuestions
         )
-        viewModelScope.launch {
-            delay(1000)
-            loadNextQuestion()
-        }
     }
 
     fun checkOption(
