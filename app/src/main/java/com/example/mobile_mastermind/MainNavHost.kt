@@ -31,7 +31,7 @@ fun MainNavHost(
         navController = navController, startDestination = startDestination
     ) {
         composable(route = Register.route) {
-            RegisterScreen()
+            RegisterScreen(navController)
         }
         composable(route = Login.route) {
             LoginScreen(navController)

@@ -13,9 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -27,6 +33,7 @@ import com.example.mobile_mastermind.Register
 import com.example.mobile_mastermind.ui.components.PrimaryButton
 import com.example.mobile_mastermind.ui.components.TextClickable
 import com.example.mobile_mastermind.ui.components.TextFieldInput
+import com.example.mobile_mastermind.ui.components.TextFieldInputData
 import com.example.mobile_mastermind.ui.extension.TAG
 
 @Composable
@@ -56,6 +63,9 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
 
 @Composable
 fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewModel: LoginViewModel) {
+    val focusManager = LocalFocusManager.current
+    val focusRequesterPassword = remember { FocusRequester() }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,21 +89,30 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
             }
 
             TextFieldInput(
+                modifier = Modifier.fillMaxWidth(), data = TextFieldInputData(
                 value = uiState.username,
                 onValueChange = { loginViewModel.onUsernameChanged(it) },
                 title = stringResource(id = R.string.username),
                 placeholder = stringResource(id = R.string.login_username_placeholder),
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isLoading
+                    enabled = !uiState.isLoading,
+                    onImeAction = { focusRequesterPassword.requestFocus() })
             )
 
             TextFieldInput(
-                value = uiState.password,
-                onValueChange = { loginViewModel.onPasswordChanged(it) },
-                title = stringResource(id = R.string.password),
-                placeholder = stringResource(id = R.string.login_password_placeholder),
-                isPassword = true,
-                enabled = !uiState.isLoading
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequesterPassword),
+                data = TextFieldInputData(
+                    value = uiState.password,
+                    onValueChange = { loginViewModel.onPasswordChanged(it) },
+                    title = stringResource(id = R.string.password),
+                    placeholder = stringResource(id = R.string.login_password_placeholder),
+                    isPassword = true,
+                    enabled = !uiState.isLoading,
+                    imeAction = ImeAction.Done,
+                    onImeAction = {
+                        focusManager.submitForm(loginViewModel, uiState)
+                    })
             )
 
             if (uiState.isLoading) {
@@ -101,8 +120,7 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
             } else {
                 PrimaryButton(
                     text = stringResource(id = R.string.login_button),
-                    onClick = { loginViewModel.onLoginClicked(uiState.username, uiState.password) }
-                )
+                    onClick = { focusManager.submitForm(loginViewModel, uiState) })
             }
         }
 
@@ -118,4 +136,14 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
             enabled = !uiState.isLoading
         )
     }
+}
+
+private fun FocusManager.submitForm(
+    viewModel: LoginViewModel, state: LoginUiState
+) {
+    clearFocus(force = true)
+    viewModel.onLoginClicked(
+        username = state.username,
+        password = state.password,
+    )
 }

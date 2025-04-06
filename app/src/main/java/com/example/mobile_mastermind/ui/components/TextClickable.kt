@@ -32,20 +32,21 @@ fun TextClickable(
     Row {
         Text(
             text = previousText,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Text(
             text = " $textClickable",
             style = MaterialTheme.typography.bodyLarge,
             color = GreenLight,
-            modifier = if (enabled) Modifier.clickable { onClick() } else Modifier
+            modifier = if (enabled) Modifier.clickable { onClick() } else Modifier,
+
         )
 
         if (!laterText.isNullOrEmpty()) {
             Text(
                 text = laterText,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

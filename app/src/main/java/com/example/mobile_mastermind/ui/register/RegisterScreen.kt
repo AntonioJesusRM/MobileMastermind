@@ -1,31 +1,74 @@
 package com.example.mobile_mastermind.ui.register
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
+import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.Register
 import com.example.mobile_mastermind.ui.components.PrimaryButton
 import com.example.mobile_mastermind.ui.components.TextClickable
 import com.example.mobile_mastermind.ui.components.TextFieldInput
-import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
+import com.example.mobile_mastermind.ui.components.TextFieldInputData
+import com.example.mobile_mastermind.ui.extension.TAG
 
 @Composable
-fun RegisterScreen(registerViewModel: RegisterViewModel = hiltViewModel()) {
+fun RegisterScreen(
+    navController: NavHostController, registerViewModel: RegisterViewModel = hiltViewModel()
+) {
     val uiState = registerViewModel.uiState.value
+    val registerResult by registerViewModel.registerResult.collectAsState()
 
+    LaunchedEffect(registerResult) {
+        when (registerResult) {
+            is RegisterResult.Success -> {
+                navController.navigate(Login.route, navOptions {
+                    popUpTo(Login.route) { inclusive = true }
+                })
+                registerViewModel.clearRegisterResult()
+            }
+
+            is RegisterResult.Error -> {
+                Log.d(TAG, "%>Error: ${(registerResult as RegisterResult.Error).message}")
+                registerViewModel.clearRegisterResult()
+            }
+
+            else -> Unit
+        }
+    }
+    RegisterBody(navController, uiState, registerViewModel)
+}
+
+@Composable
+fun RegisterBody(
+    navController: NavHostController, uiState: RegisterUiState, registerViewModel: RegisterViewModel
+) {
+    val focusManager = LocalFocusManager.current
+    val (focusRequesterEmail, focusRequesterPassword, focusRequesterRepeatPassword) = rememberFocusRequesters()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,60 +77,110 @@ fun RegisterScreen(registerViewModel: RegisterViewModel = hiltViewModel()) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
+            modifier = Modifier.imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.register_title),
                 style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(30.dp))
-            TextFieldInput(
-                value = uiState.username,
-                onValueChange = { registerViewModel.onUsernameChanged(it) },
-                title = stringResource(id = R.string.username),
-                placeholder = stringResource(id = R.string.login_username_placeholder),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(11.dp))
-            TextFieldInput(
-                value = uiState.password,
-                onValueChange = { registerViewModel.onEmailChanged(it) },
-                title = stringResource(id = R.string.register_email),
-                placeholder = stringResource(id = R.string.register_email)
-            )
-            Spacer(modifier = Modifier.height(11.dp))
-            TextFieldInput(
-                value = uiState.password,
-                onValueChange = { registerViewModel.onPasswordChanged(it) },
-                title = stringResource(id = R.string.password),
-                placeholder = stringResource(id = R.string.password),
-                isPassword = true
-            )
-            Spacer(modifier = Modifier.height(11.dp))
-            TextFieldInput(
-                value = uiState.password,
-                onValueChange = { registerViewModel.onRepeatPasswordChanged(it) },
-                title = stringResource(id = R.string.register_repeat_password),
-                placeholder = stringResource(id = R.string.register_repeat_password),
-                isPassword = true
-            )
-            Spacer(modifier = Modifier.height(11.dp))
-            PrimaryButton(
-                text = stringResource(id = R.string.register_button),
-                onClick = { registerViewModel.onRegisterClicked() })
+            Column(
+                modifier = Modifier.padding(top = 30.dp),
+                verticalArrangement = Arrangement.spacedBy(11.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextFieldInput(
+                    modifier = Modifier.fillMaxWidth(),
+                    data = TextFieldInputData(
+                        value = uiState.username,
+                        onValueChange = { registerViewModel.onUsernameChanged(it) },
+                        title = stringResource(id = R.string.username),
+                        placeholder = stringResource(id = R.string.login_username_placeholder),
+                        enabled = !uiState.isLoading,
+                        onImeAction = { focusRequesterEmail.requestFocus() }),
+                )
+                TextFieldInput(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesterEmail),
+                    data = TextFieldInputData(
+                        value = uiState.email,
+                        onValueChange = { registerViewModel.onEmailChanged(it) },
+                        title = stringResource(id = R.string.register_email),
+                        placeholder = stringResource(id = R.string.register_email),
+                        enabled = !uiState.isLoading,
+                        onImeAction = { focusRequesterPassword.requestFocus() }),
+                )
+                TextFieldInput(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesterPassword),
+                    data = TextFieldInputData(
+                        value = uiState.password,
+                        onValueChange = { registerViewModel.onPasswordChanged(it) },
+                        title = stringResource(id = R.string.password),
+                        placeholder = stringResource(id = R.string.password),
+                        isPassword = true,
+                        enabled = !uiState.isLoading,
+                        onImeAction = { focusRequesterRepeatPassword.requestFocus() }),
+                )
+                TextFieldInput(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesterRepeatPassword),
+                    data = TextFieldInputData(
+                        value = uiState.passwordRepeat,
+                        onValueChange = { registerViewModel.onRepeatPasswordChanged(it) },
+                        title = stringResource(id = R.string.register_repeat_password),
+                        placeholder = stringResource(id = R.string.register_repeat_password),
+                        isPassword = true,
+                        enabled = !uiState.isLoading,
+                        imeAction = ImeAction.Done,
+                        onImeAction = {
+                            focusManager.submitForm(registerViewModel, uiState)
+                        })
+                )
+                if (uiState.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    PrimaryButton(
+                        text = stringResource(id = R.string.register_button), onClick = {
+                            focusManager.submitForm(registerViewModel, uiState)
+                        })
+                }
+            }
         }
         TextClickable(
             stringResource(R.string.register_login_prompt),
             stringResource(R.string.register_login_prompt_clickable),
-            onClick = { registerViewModel.onLoginClicked() })
+            onClick = {
+                navController.navigate(Login.route, navOptions {
+                    popUpTo(Register.route) { inclusive = true }
+                })
+                registerViewModel.clearRegisterResult()
+            },
+            enabled = !uiState.isLoading
+        )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
-    MOBILEMASTERMINDTheme {
-        val viewModel = RegisterViewModel()
-        RegisterScreen(registerViewModel = viewModel)
+private fun rememberFocusRequesters(): Triple<FocusRequester, FocusRequester, FocusRequester> {
+    return remember {
+        Triple(
+            FocusRequester(), FocusRequester(), FocusRequester()
+        )
     }
+}
+
+private fun FocusManager.submitForm(
+    viewModel: RegisterViewModel, state: RegisterUiState
+) {
+    clearFocus(force = true)
+    viewModel.onRegisterClicked(
+        username = state.username,
+        email = state.email,
+        password = state.password,
+        repeatPassword = state.passwordRepeat
+    )
 }
