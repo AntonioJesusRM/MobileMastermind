@@ -4,6 +4,10 @@ sealed interface MainDestination {
     val route: String
 }
 
+data object Splash : MainDestination {
+    override val route = "splash"
+}
+
 data object Login : MainDestination {
     override val route = "login"
 }
@@ -17,8 +21,7 @@ data object Home : MainDestination {
 }
 
 data object Game : MainDestination {
-    override val route = "game/{categoryId}"
-    fun createRoute(categoryId: Int) = "game/$categoryId"
+    override val route = "game"
 }
 
 data object Review : MainDestination {

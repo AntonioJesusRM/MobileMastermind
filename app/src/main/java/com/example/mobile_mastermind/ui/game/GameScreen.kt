@@ -47,11 +47,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
-import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Home
 import com.example.mobile_mastermind.Review
 import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.home.Category
 import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.Black
@@ -65,10 +64,10 @@ import kotlin.math.ceil
 
 @Composable
 fun GameScreen(
-    categoryId: Int, navController: NavController, gameViewModel: GameViewModel = hiltViewModel()
+    category: Category, navController: NavController, gameViewModel: GameViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
-        gameViewModel.loadQuestions(categoryId)
+        gameViewModel.loadQuestions(category)
     }
 
     val uiState by gameViewModel.uiState
@@ -101,9 +100,10 @@ private fun GameBody(
     val currentQuestion = uiState.questions.getOrNull(uiState.currentQuestionIndex)
 
     if (currentQuestion == null) {
-        navController.navigate(Review.route, navOptions {
-            popUpTo(Game.route) { inclusive = true }
-        })
+        val resumeGame = uiState.resumeGame
+        navController.previousBackStackEntry?.savedStateHandle?.set("resumeGame", resumeGame)
+        navController.popBackStack()
+        navController.navigate(Review.route)
         return
     }
 
@@ -142,7 +142,10 @@ private fun GameBody(
 
             ProgressGame(uiState.infoGame, uiState.questions.size)
 
-            QuestionCard(question = currentQuestion.text, imageRes = currentQuestion.questionImg)
+            QuestionCard(
+                question = currentQuestion.text,
+                imageRes = currentQuestion.questionImg
+            )
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(21.dp)
@@ -209,7 +212,10 @@ private fun ProgressGame(
                             arcTo(Rect(0f, 0f, size.height, size.height), 90f, 180f, false)
                             lineTo(width - radius, 0f)
                             arcTo(
-                                Rect(width - size.height, 0f, width, size.height), 270f, 180f, false
+                                Rect(width - size.height, 0f, width, size.height),
+                                270f,
+                                180f,
+                                false
                             )
                             lineTo(radius, size.height)
                             close()

@@ -102,8 +102,10 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
         CategoriesSection(
             categories = uiState.categories,
             marginBot,
-            onCategoryClick = { categoryId ->
-                navController.navigate(Game.createRoute(categoryId = categoryId))
+            onCategoryClick = { index ->
+                val category = uiState.categories[index - 1]
+                navController.currentBackStackEntry?.savedStateHandle?.set("category", category)
+                navController.navigate(Game.route)
             })
     }
 }

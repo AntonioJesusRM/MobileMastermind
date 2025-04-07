@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.home.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,12 +16,12 @@ class GameViewModel @Inject constructor() : ViewModel() {
     private val _uiState = mutableStateOf(GameUiState())
     val uiState: State<GameUiState> = _uiState
 
-    fun loadQuestions(categoryId: Int) {
+    fun loadQuestions(category: Category) {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
                 delay(2000)
-                require(categoryId == 1) { "Solo la categoría 1 está disponible en este momento" }
+                require(category.id == 1) { "Solo la categoría 1 está disponible en este momento" }
                 _uiState.value = GameUiState(
                     questions = listOf(
                         Question(
@@ -103,7 +104,13 @@ class GameViewModel @Inject constructor() : ViewModel() {
                         )
                     ),
                     currentQuestionIndex = 0,
-                    score = 0
+                    resumeGame = ResumeGame(
+                        name = category.name,
+                        score = 0,
+                        answerCorrect = 0,
+                        answerIncorrect = 0,
+                        questionsResult = emptyList()
+                    )
                 )
             } catch (e: Exception) {
                 _uiState.value =
@@ -118,16 +125,31 @@ class GameViewModel @Inject constructor() : ViewModel() {
         val currentQuestion = _uiState.value.questions[_uiState.value.currentQuestionIndex]
         val isCorrect = currentQuestion.options.any { it.id == optionId && it.isCorrect }
 
+        val questionResults = QuestionResults(
+            id = currentQuestion.id,
+            question = currentQuestion.text,
+            response = currentQuestion.options.firstOrNull { it.id == optionId }?.text
+                ?: "Respuesta desconocida",
+            isCorrect = isCorrect
+        )
         _uiState.value = _uiState.value.copy(
             selectedAnswer = optionId,
-            score = if (isCorrect) _uiState.value.score + 10 else _uiState.value.score,
+            resumeGame = if (isCorrect) _uiState.value.resumeGame.copy(
+                score = _uiState.value.resumeGame.score + 20,
+                answerCorrect = _uiState.value.resumeGame.answerCorrect + 1,
+                questionsResult = _uiState.value.resumeGame.questionsResult + questionResults
+            ) else _uiState.value.resumeGame.copy(
+                score = _uiState.value.resumeGame.score,
+                answerIncorrect = _uiState.value.resumeGame.answerIncorrect + 1,
+                questionsResult = _uiState.value.resumeGame.questionsResult + questionResults
+            ),
             infoGame = _uiState.value.infoGame + isCorrect
         )
     }
 
     fun loadNextQuestion() {
         _uiState.value = _uiState.value.copy(
-            currentQuestionIndex = _uiState.value.currentQuestionIndex + 1
+            currentQuestionIndex = _uiState.value.currentQuestionIndex + 1,
         )
     }
 
@@ -136,10 +158,20 @@ class GameViewModel @Inject constructor() : ViewModel() {
             if (q.id == currentQuestion.id) q.copy(showResult = true) else q
         }
 
+        val questionResults = QuestionResults(
+            id = currentQuestion.id,
+            question = currentQuestion.text,
+            response = "",
+            isCorrect = false
+        )
+
         _uiState.value = _uiState.value.copy(
             infoGame = _uiState.value.infoGame + false,
-            score = _uiState.value.score,
-            questions = updatedQuestions
+            questions = updatedQuestions,
+            resumeGame = _uiState.value.resumeGame.copy(
+                answerIncorrect = _uiState.value.resumeGame.answerIncorrect + 1,
+                questionsResult = _uiState.value.resumeGame.questionsResult + questionResults
+            )
         )
     }
 

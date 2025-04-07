@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -34,28 +35,39 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.mobile_mastermind.Home
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.Review
 import com.example.mobile_mastermind.ui.components.PrimaryButton
+import com.example.mobile_mastermind.ui.game.QuestionResults
+import com.example.mobile_mastermind.ui.game.ResumeGame
 import com.example.mobile_mastermind.ui.theme.GreenLight
-import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.RedLight
 
 @Composable
 fun ReviewScreen(
-    modifier: Modifier = Modifier,
+    resumeGame: ResumeGame,
+    navController: NavController,
     reviewViewModel: ReviewViewModel = hiltViewModel(),
-    onDoneClick: () -> Unit = {}
 ) {
+    LaunchedEffect(Unit) {
+        reviewViewModel.loadData(resumeGame)
+    }
+
     val uiState = reviewViewModel.uiState.value
 
     Scaffold(
-        modifier = modifier, bottomBar = {
+        modifier = Modifier, bottomBar = {
             PrimaryButton(
                 text = stringResource(R.string.review_button_done),
-                onClick = onDoneClick,
+                onClick = {
+                    navController.navigate(Home.route) {
+                        popUpTo(Review.route) { inclusive = true }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -90,10 +102,11 @@ fun ReviewScreen(
             AnswersCard(questions = uiState.questions)
         }
     }
+
 }
 
 @Composable
-private fun AnswersCard(questions: List<QuestionResult>) {
+private fun AnswersCard(questions: List<QuestionResults>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,7 +130,7 @@ private fun AnswersCard(questions: List<QuestionResult>) {
 
 @Composable
 private fun QuestionItem(
-    question: QuestionResult, questionNumber: Int
+    question: QuestionResults, questionNumber: Int
 ) {
     Row(
         modifier = Modifier
@@ -145,13 +158,13 @@ private fun QuestionItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = question.questionText,
+                text = question.question,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = question.userAnswer,
+                text = question.response,
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (question.isCorrect) GreenLight
                 else RedLight
@@ -276,13 +289,4 @@ private fun AnswerIndicator(
 
 private enum class IndicatorSize {
     MEDIUM, LARGE
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ReviewScreenPreview() {
-    MOBILEMASTERMINDTheme {
-        val viewModel = ReviewViewModel()
-        ReviewScreen(reviewViewModel = viewModel)
-    }
 }

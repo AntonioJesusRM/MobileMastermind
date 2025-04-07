@@ -1,5 +1,8 @@
 package com.example.mobile_mastermind.ui.home
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class HomeUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -10,13 +13,14 @@ data class HomeUiState(
     val categories: List<Category> = emptyList(),
 )
 
+@Parcelize
 data class Category(
     val id: Int,
     val name: String,
     val type: String,
     val quizCount: Int,
     val iconRes: Int
-)
+) : Parcelable
 
 data class LastGame(
     val id: Int,
