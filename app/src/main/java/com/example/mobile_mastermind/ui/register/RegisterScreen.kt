@@ -1,6 +1,5 @@
 package com.example.mobile_mastermind.ui.register
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
+import com.example.mobile_mastermind.Home
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.Register
@@ -34,7 +34,6 @@ import com.example.mobile_mastermind.ui.components.PrimaryButton
 import com.example.mobile_mastermind.ui.components.TextClickable
 import com.example.mobile_mastermind.ui.components.TextFieldInput
 import com.example.mobile_mastermind.ui.components.TextFieldInputData
-import com.example.mobile_mastermind.ui.extension.TAG
 
 @Composable
 fun RegisterScreen(
@@ -46,14 +45,13 @@ fun RegisterScreen(
     LaunchedEffect(registerResult) {
         when (registerResult) {
             is RegisterResult.Success -> {
-                navController.navigate(Login.route, navOptions {
-                    popUpTo(Login.route) { inclusive = true }
+                navController.navigate(Home.route, navOptions {
+                    popUpTo(Register.route) { inclusive = true }
                 })
                 registerViewModel.clearRegisterResult()
             }
 
             is RegisterResult.Error -> {
-                Log.d(TAG, "%>Error: ${(registerResult as RegisterResult.Error).message}")
                 registerViewModel.clearRegisterResult()
             }
 

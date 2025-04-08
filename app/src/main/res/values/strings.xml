@@ -54,7 +54,7 @@
     <!-- String for Ranking -->
     <string name="ranking_profile_image_description">Profile image</string>
     <string name="ranking_title">Clasificación</string>
-    <string name="ranking_your_position">Tu</string>
+    <string name="ranking_your_position">Tú</string>
     <string name="ranking_avatar_content_description">Avatar</string>
     <string name="ranking_medal_content_description">Medalla %dº posicion</string>
     <string name="ranking_crown_content_description">Corona</string>
@@ -66,10 +66,9 @@
     <string name="profile_user_content_description">Usuario</string>
     <string name="profile_stat_icon_constent_description">Icono de stat</string>
     <string name="profile_points_title">Puntos</string>
-    <string name="profile_best_score_title">Mejor puntuación</string>
+    <string name="profile_best_score_title">Mejor partida</string>
     <string name="profile_ranking_title">Clasificación</string>
     <string name="profile_title_stats">Estadisticas</string>
-    <string name="profile_stat_best_score">Mejor puntuación</string>
     <string name="profile_stat_unit">pts</string>
     <string name="profile_stat_best_question">Mejor pregunta</string>
     <string name="profile_stat_total_games">Total de partidas</string>

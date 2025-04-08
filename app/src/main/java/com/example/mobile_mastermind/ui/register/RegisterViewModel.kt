@@ -41,7 +41,7 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
-                delay(2000)
+                delay(1000)
                 require(!(username != "admin" || email != "admin@gmail.com" || password != "admin" || repeatPassword != "admin")) { "El usuario ya existe" }
                 _registerResult.value = RegisterResult.Success
             } catch (e: Exception) {

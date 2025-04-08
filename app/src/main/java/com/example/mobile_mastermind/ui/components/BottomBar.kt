@@ -83,7 +83,9 @@ private fun getIconColor(isSelected: Boolean): Color {
 
 private fun navToScreen(isSelected: Boolean, navController: NavController, item: BottomNavItem) {
     if (!isSelected) {
-        navController.navigate(item.route)
+        navController.navigate(item.route) {
+            popUpTo(0)
+        }
     }
 }
 

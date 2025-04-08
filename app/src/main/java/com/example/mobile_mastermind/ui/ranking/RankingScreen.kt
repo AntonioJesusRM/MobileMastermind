@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,6 +42,7 @@ import androidx.navigation.NavController
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.ProgressCircle
 import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
@@ -54,16 +54,7 @@ fun RankingScreen(
 ) {
     val uiState = rankingViewModel.uiState.value
     when {
-        uiState.isLoading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        uiState.isLoading -> ProgressCircle()
 
         uiState.errorMessage != null -> {
             ErrorScreen(message = uiState.errorMessage) {
@@ -75,6 +66,7 @@ fun RankingScreen(
 
         else -> {
             Scaffold(
+                containerColor = Color.Transparent,
                 bottomBar = { BottomNav(navController) }) { padding ->
                 RankingBody(
                     uiState = uiState, marginBot = padding.calculateBottomPadding()
@@ -141,7 +133,10 @@ fun TopRankingCard(
         shape = RoundedCornerShape(0.dp),
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,

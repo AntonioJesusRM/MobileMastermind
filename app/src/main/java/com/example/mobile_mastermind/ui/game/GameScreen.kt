@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -405,6 +406,7 @@ private fun QuestionCard(
                 .padding(16.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             imageRes?.let {
                 Image(
@@ -415,7 +417,12 @@ private fun QuestionCard(
                         .size(100.dp)
                 )
             }
-            Text(text = question, style = MaterialTheme.typography.titleMedium)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = question,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

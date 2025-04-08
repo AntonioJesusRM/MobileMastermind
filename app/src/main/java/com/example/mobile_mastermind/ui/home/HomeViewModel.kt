@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
-                delay(2000)
+                delay(1000)
                 _uiState.value = HomeUiState(
                     userName = "Andrés",
                     points = 300,

@@ -25,7 +25,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
-                delay(2000)
+                delay(1000)
                 _uiState.value = ProfileUiState(
                     profileImg = R.drawable.ic_launcher_foreground,
                     name = "Andrés",

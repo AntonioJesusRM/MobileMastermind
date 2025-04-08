@@ -20,7 +20,7 @@ class GameViewModel @Inject constructor() : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
-                delay(2000)
+                delay(1000)
                 require(category.id == 1) { "Solo la categoría 1 está disponible en este momento" }
                 _uiState.value = GameUiState(
                     questions = listOf(
@@ -89,17 +89,6 @@ class GameViewModel @Inject constructor() : ViewModel() {
                                     text = "Ninguna de las anteriores",
                                     isCorrect = false
                                 )
-                            )
-                        ),
-                        Question(
-                            id = 5,
-                            correctOptionId = 1,
-                            text = "¿Qué imprimirá este código?\nval x = listOf(1, 2, 3).map { it * it }.filter { it > 2 }",
-                            options = listOf(
-                                Option(id = 1, text = "[4, 9]", isCorrect = true),
-                                Option(id = 2, text = "[1, 4, 9]", isCorrect = false),
-                                Option(id = 3, text = "[9]", isCorrect = false),
-                                Option(id = 4, text = "[2, 3]", isCorrect = false)
                             )
                         )
                     ),

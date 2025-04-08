@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +40,7 @@ import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.ProgressCircle
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -53,16 +54,7 @@ fun HomeScreen(
     val uiState = homeViewModel.uiState.value
 
     when {
-        uiState.isLoading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        uiState.isLoading -> ProgressCircle()
 
         uiState.errorMessage != null -> {
             ErrorScreen(message = uiState.errorMessage) {
@@ -74,6 +66,7 @@ fun HomeScreen(
 
         else -> {
             Scaffold(
+                containerColor = Color.Transparent,
                 bottomBar = { BottomNav(navController) }) { padding ->
                 HomeBody(
                     navController = navController,
@@ -172,12 +165,12 @@ private fun LastGameCard(lastGame: LastGame) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier.size(107.dp), contentAlignment = Alignment.Center
+                modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(lastGame.iconRes),
                     contentDescription = stringResource(R.string.home_user_image_content_description),
-                    modifier = Modifier.size(107.dp),
+                    modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -187,12 +180,12 @@ private fun LastGameCard(lastGame: LastGame) {
                 Text(
                     text = stringResource(R.string.home_last_game_text),
                     color = White,
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
                     text = " " + stringResource(R.string.home_user_points, lastGame.points),
                     color = White,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
 

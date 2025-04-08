@@ -24,7 +24,7 @@ class RankingViewModel @Inject constructor() : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
-                delay(2000)
+                delay(1000)
                 _uiState.value = RankingUiState(
                     globalRankings = listOf(
                         RankingItem(R.drawable.ic_launcher_foreground, "Carlos", 2400),
@@ -47,7 +47,7 @@ class RankingViewModel @Inject constructor() : ViewModel() {
                         RankingItem(R.drawable.ic_launcher_foreground, "Natalia", 700),
                         RankingItem(R.drawable.ic_launcher_foreground, "Iván", 600),
                         RankingItem(R.drawable.ic_launcher_foreground, "Rosa", 500)
-                    ), myPosition = 3
+                    ), myPosition = 12
                 )
             } catch (e: Exception) {
                 _uiState.value =

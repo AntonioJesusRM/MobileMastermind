@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +41,7 @@ import androidx.navigation.NavController
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.ProgressCircle
 import com.example.mobile_mastermind.ui.extension.PutImage
 import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
@@ -58,16 +58,7 @@ fun ProfileScreen(
     val uiState = profileViewModel.uiState.value
 
     when {
-        uiState.isLoading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        uiState.isLoading -> ProgressCircle()
 
         uiState.errorMessage != null -> {
             ErrorScreen(message = uiState.errorMessage) {
@@ -79,6 +70,7 @@ fun ProfileScreen(
 
         else -> {
             Scaffold(
+                containerColor = Color.Transparent,
                 bottomBar = { BottomNav(navController) }) { padding ->
                 ProfileBody(
                     uiState = uiState, marginBot = padding.calculateBottomPadding()
@@ -96,7 +88,7 @@ private fun ProfileBody(uiState: ProfileUiState, marginBot: Dp) {
             .padding(0.dp, 25.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ProfileCard(modifier = Modifier, uiState.profileImg, uiState.name, uiState.email)
+        ProfileCard(modifier = Modifier, uiState.profileImg, uiState.name)
         Spacer(modifier = Modifier.height(11.dp))
         DataCard(modifier = Modifier, uiState.points, uiState.bestScore, uiState.ranking)
         Spacer(modifier = Modifier.height(13.dp))
@@ -145,7 +137,7 @@ private fun StatCategoryItem(category: CategoryStats) {
         StatItem(statImg = null, title = category.title, statColor = category.colorCategory),
         StatItem(
             statImg = R.drawable.stat_check_item,
-            title = stringResource(R.string.profile_stat_best_score),
+            title = stringResource(R.string.profile_best_score_title),
             statBackground = R.drawable.stat_best_background,
             value = category.bestScore,
             unit = stringResource(R.string.profile_stat_unit),
@@ -194,8 +186,8 @@ private fun StatCategoryItem(category: CategoryStats) {
 private fun StatCard(stat: StatItem) {
     Card(
         modifier = Modifier
-            .width(150.dp)
-            .height(170.dp),
+            .width(120.dp)
+            .height(150.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (stat.statBackground == null) stat.statColor
@@ -205,22 +197,28 @@ private fun StatCard(stat: StatItem) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             if (stat.statBackground != null) {
-                PutImage(stat.statBackground, stat.statImg, stat.statColor, 60)
-                Spacer(modifier = Modifier.height(14.dp))
-                Text(
-                    text = stat.title,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "${stat.value} ${stat.unit}",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                PutImage(stat.statBackground, stat.statImg, stat.statColor, 50)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Text(
+                        text = stat.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "${stat.value} ${stat.unit}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
             } else {
                 Box(
                     modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
@@ -320,7 +318,7 @@ private fun ProfileStatItem(
 
 @Composable
 private fun ProfileCard(
-    modifier: Modifier = Modifier, userImg: Int?, userName: String, userEmail: String
+    modifier: Modifier = Modifier, userImg: Int?, userName: String
 ) {
     Card(
         modifier = modifier
@@ -337,24 +335,21 @@ private fun ProfileCard(
             ) {
                 Column(
                     modifier = Modifier.padding(bottom = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     if (userImg != null) {
                         Image(
                             painter = painterResource(userImg),
                             contentDescription = stringResource(R.string.profile_user_content_description),
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(150.dp)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Spacer(modifier = Modifier.width(11.dp))
                     Text(
-                        text = userName, style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = userEmail, style = MaterialTheme.typography.titleSmall,
+                        text = userName, style = MaterialTheme.typography.titleLarge
                     )
                 }
             }
