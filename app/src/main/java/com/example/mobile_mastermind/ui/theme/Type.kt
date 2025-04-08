@@ -55,7 +55,7 @@ val AppTypography = Typography(
         fontSize = 15.sp
     ),
 
-    // Regular 15
+    // Regular 12
     bodySmall = TextStyle(
         fontFamily = PoppinsFontFamily,
         fontWeight = FontWeight.Normal,

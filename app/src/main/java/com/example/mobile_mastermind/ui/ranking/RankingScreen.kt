@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,21 +35,50 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
-import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.White
 
 @Composable
 fun RankingScreen(
-    modifier: Modifier = Modifier, rankingViewModel: RankingViewModel = hiltViewModel()
+    navController: NavController, rankingViewModel: RankingViewModel = hiltViewModel()
 ) {
     val uiState = rankingViewModel.uiState.value
+    when {
+        uiState.isLoading -> ProgressCircle()
+
+        uiState.errorMessage != null -> {
+            ErrorScreen(message = uiState.errorMessage) {
+                navController.navigate(Login.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+
+        else -> {
+            Scaffold(
+                containerColor = Color.Transparent,
+                bottomBar = { BottomNav(navController) }) { padding ->
+                RankingBody(
+                    uiState = uiState, marginBot = padding.calculateBottomPadding()
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun RankingBody(marginBot: Dp, uiState: RankingUiState) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(uiState.globalRankings.isNotEmpty(), uiState.myPosition) {
@@ -58,22 +89,27 @@ fun RankingScreen(
             )
         }
     }
-
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(0.dp, 42.dp),
+            .padding(top = 42.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(R.string.ranking_title),
             style = MaterialTheme.typography.titleLarge
         )
+
         Spacer(modifier = Modifier.height(22.dp))
+
         TopRankingCard(uiState.globalRankings.take(3), uiState.myPosition)
+
         Spacer(modifier = Modifier.height(14.dp))
+
         LazyColumn(
-            state = listState, verticalArrangement = Arrangement.spacedBy(14.dp)
+            contentPadding = PaddingValues(bottom = marginBot),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             items(items = uiState.globalRankings.drop(3)) { item ->
                 RankingCard(
@@ -97,7 +133,10 @@ fun TopRankingCard(
         shape = RoundedCornerShape(0.dp),
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,
@@ -153,9 +192,7 @@ private fun TopRankingItem(
         Spacer(modifier = Modifier.height(14.dp))
 
         Text(
-            text = name,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
+            text = name, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center
         )
 
         Text(
@@ -276,14 +313,5 @@ private fun RankingCard(
                 style = MaterialTheme.typography.bodySmall
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RankingScreenPreview() {
-    MOBILEMASTERMINDTheme {
-        val viewModel = RankingViewModel()
-        RankingScreen(rankingViewModel = viewModel)
     }
 }

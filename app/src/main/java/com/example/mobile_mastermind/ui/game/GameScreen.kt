@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +25,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,13 +44,18 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.mobile_mastermind.Home
+import com.example.mobile_mastermind.Review
+import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.home.Category
+import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
-import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.PlaceholderLight
 import com.example.mobile_mastermind.ui.theme.RedLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -58,52 +64,114 @@ import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 @Composable
-fun GameScreen(gameViewModel: GameViewModel = hiltViewModel()) {
-    val uiState = gameViewModel.uiState.value
+fun GameScreen(
+    category: Category, navController: NavController, gameViewModel: GameViewModel = hiltViewModel()
+) {
+    LaunchedEffect(Unit) {
+        gameViewModel.loadQuestions(category)
+    }
+
+    val uiState by gameViewModel.uiState
+
+    when {
+        uiState.isLoading -> ProgressCircle()
+
+        uiState.errorMessage != null -> {
+            ErrorScreen(message = uiState.errorMessage) {
+                navController.navigate(Home.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+
+        uiState.questions.isEmpty() -> ProgressCircle()
+
+        else -> {
+            GameBody(
+                navController = navController, uiState = uiState, gameViewModel = gameViewModel
+            )
+        }
+    }
+}
+
+@Composable
+private fun GameBody(
+    navController: NavController, uiState: GameUiState, gameViewModel: GameViewModel
+) {
     val currentQuestion = uiState.questions.getOrNull(uiState.currentQuestionIndex)
 
     if (currentQuestion == null) {
-        gameViewModel.finishGame()
+        val resumeGame = uiState.resumeGame
+        navController.previousBackStackEntry?.savedStateHandle?.set("resumeGame", resumeGame)
+        navController.popBackStack()
+        navController.navigate(Review.route)
         return
     }
+
+    var isAnswerSelected by remember { mutableStateOf(false) }
+    var timeOut by remember { mutableStateOf(false) }
+    var selectedAnswerId by remember { mutableStateOf<Int?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(25.dp, 40.dp)
     ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Go back",
-            tint = Black,
-            modifier = Modifier.size(30.dp)
-        )
-
-        Spacer(modifier = Modifier.height(21.dp))
-
-        TimerCard(
-            modifier = Modifier,
-            currentQuestionIndex = uiState.currentQuestionIndex,
-            totalQuestions = uiState.questions.size,
-            onTimeOut = { gameViewModel.timeOut() })
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        ProgressGame(uiState.infoGame, uiState.questions.size)
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        QuestionCard(question = currentQuestion.text, imageRes = currentQuestion.questionImg)
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(21.dp)
+        IconButton(
+            onClick = { navController.popBackStack() }, modifier = Modifier.size(30.dp)
         ) {
-            items(items = currentQuestion.options) { option ->
-                AnswerButton(
-                    answer = option.text, onClick = { gameViewModel.selectAnswer(option.id) })
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = null,
+                tint = Black
+            )
+        }
+        Column(
+            modifier = Modifier.padding(top = 21.dp),
+            verticalArrangement = Arrangement.spacedBy(30.dp)
+        ) {
+            TimerCard(
+                modifier = Modifier,
+                currentQuestionIndex = uiState.currentQuestionIndex,
+                totalQuestions = uiState.questions.size,
+                onTimeOut = {
+                    gameViewModel.timeOut(currentQuestion)
+                    timeOut = true
+                },
+                isAnswerSelected = isAnswerSelected
+            )
+
+            ProgressGame(uiState.infoGame, uiState.questions.size)
+
+            QuestionCard(
+                question = currentQuestion.text,
+                imageRes = currentQuestion.questionImg
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(21.dp)
+            ) {
+                items(items = currentQuestion.options) { option ->
+                    AnswerButton(
+                        answer = option.text, isCorrect = gameViewModel.checkOption(
+                            isAnswerSelected, selectedAnswerId, option, currentQuestion
+                        ), onClick = {
+                            if (!isAnswerSelected) {
+                                selectedAnswerId = option.id
+                                isAnswerSelected = true
+                                gameViewModel.selectAnswer(option.id)
+                            }
+                        })
+                }
             }
+        }
+    }
+    if (isAnswerSelected || timeOut) {
+        LaunchedEffect(selectedAnswerId, timeOut) {
+            delay(1000)
+            gameViewModel.loadNextQuestion()
+            isAnswerSelected = false
+            timeOut = false
         }
     }
 }
@@ -145,7 +213,10 @@ private fun ProgressGame(
                             arcTo(Rect(0f, 0f, size.height, size.height), 90f, 180f, false)
                             lineTo(width - radius, 0f)
                             arcTo(
-                                Rect(width - size.height, 0f, width, size.height), 270f, 180f, false
+                                Rect(width - size.height, 0f, width, size.height),
+                                270f,
+                                180f,
+                                false
                             )
                             lineTo(radius, size.height)
                             close()
@@ -163,6 +234,7 @@ private fun TimerCard(
     currentQuestionIndex: Int,
     totalQuestions: Int,
     onTimeOut: () -> Unit = {},
+    isAnswerSelected: Boolean = false
 ) {
     val initialTime = 15
     val totalMillis = initialTime * 1000L
@@ -170,30 +242,32 @@ private fun TimerCard(
     val startTime = remember { System.currentTimeMillis() }
     val progress = remember { Animatable(1f) }
 
-    LaunchedEffect(currentQuestionIndex) {
-        elapsedTime = 0L
-        progress.snapTo(1f)
-    }
+    LaunchedEffect(currentQuestionIndex, isAnswerSelected) {
+        if (!isAnswerSelected) {
+            elapsedTime = 0L
+            progress.snapTo(1f)
 
-    LaunchedEffect(progress) {
-        val frameDuration = 16L // ~60 FPS
+            val frameDuration = 16L // ~60 FPS
 
-        while (elapsedTime < totalMillis) {
-            val currentTime = System.currentTimeMillis()
-            val delta = (currentTime - startTime - elapsedTime).coerceAtMost(frameDuration)
-            delay(delta)
+            while (elapsedTime < totalMillis) {
+                val currentTime = System.currentTimeMillis()
+                val delta = (currentTime - startTime - elapsedTime).coerceAtMost(frameDuration)
+                delay(delta)
 
-            elapsedTime += delta
-            val newProgress = 1f - (elapsedTime.toFloat() / totalMillis)
+                elapsedTime += delta
+                val newProgress = 1f - (elapsedTime.toFloat() / totalMillis)
 
-            launch {
-                progress.snapTo(newProgress.coerceIn(0f, 1f))
+                launch {
+                    progress.snapTo(newProgress.coerceIn(0f, 1f))
+                }
+
+                if (elapsedTime >= totalMillis) {
+                    progress.snapTo(0f)
+                    onTimeOut()
+                }
             }
-
-            if (elapsedTime >= totalMillis) {
-                progress.snapTo(0f)
-                onTimeOut()
-            }
+        } else {
+            progress.snapTo(progress.value)
         }
     }
 
@@ -332,6 +406,7 @@ private fun QuestionCard(
                 .padding(16.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             imageRes?.let {
                 Image(
@@ -342,16 +417,12 @@ private fun QuestionCard(
                         .size(100.dp)
                 )
             }
-            Text(text = question, style = MaterialTheme.typography.titleMedium)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = question,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GameScreenPreview() {
-    MOBILEMASTERMINDTheme {
-        val gameViewModel = GameViewModel()
-        GameScreen(gameViewModel = gameViewModel)
     }
 }

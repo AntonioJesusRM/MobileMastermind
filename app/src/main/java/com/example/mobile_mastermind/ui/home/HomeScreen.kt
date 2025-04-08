@@ -1,16 +1,16 @@
 package com.example.mobile_mastermind.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -21,34 +21,69 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.mobile_mastermind.Game
+import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
-import com.example.mobile_mastermind.ui.theme.MOBILEMASTERMINDTheme
 import com.example.mobile_mastermind.ui.theme.White
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
+    navController: NavController,
     homeViewModel: HomeViewModel = hiltViewModel(),
-    onCategoryClick: (String) -> Unit = {}
 ) {
     val uiState = homeViewModel.uiState.value
 
+    when {
+        uiState.isLoading -> ProgressCircle()
+
+        uiState.errorMessage != null -> {
+            ErrorScreen(message = uiState.errorMessage) {
+                navController.navigate(Login.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+
+        else -> {
+            Scaffold(
+                containerColor = Color.Transparent,
+                bottomBar = { BottomNav(navController) }) { padding ->
+                HomeBody(
+                    navController = navController,
+                    uiState = uiState,
+                    marginBot = padding.calculateBottomPadding()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeBody(navController: NavController, uiState: HomeUiState, marginBot: Dp) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(31.dp)
     ) {
         UserInfoSection(
@@ -58,8 +93,13 @@ fun HomeScreen(
             lastGame = uiState.lastGame
         )
         CategoriesSection(
-            categories = uiState.categories, onCategoryClick = onCategoryClick
-        )
+            categories = uiState.categories,
+            marginBot,
+            onCategoryClick = { index ->
+                val category = uiState.categories[index - 1]
+                navController.currentBackStackEntry?.savedStateHandle?.set("category", category)
+                navController.navigate(Game.route)
+            })
     }
 }
 
@@ -71,7 +111,9 @@ private fun UserInfoSection(
         verticalArrangement = Arrangement.spacedBy(31.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 38.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -98,8 +140,7 @@ private fun UserInfoSection(
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = userName,
-                        style = MaterialTheme.typography.bodyLarge
+                        text = userName, style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
@@ -120,30 +161,31 @@ private fun LastGameCard(lastGame: LastGame) {
         )
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier.size(107.dp), contentAlignment = Alignment.Center
+                modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(lastGame.iconRes),
                     contentDescription = stringResource(R.string.home_user_image_content_description),
-                    modifier = Modifier.size(107.dp),
+                    modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop
                 )
             }
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Text(
                     text = stringResource(R.string.home_last_game_text),
                     color = White,
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
                     text = " " + stringResource(R.string.home_user_points, lastGame.points),
                     color = White,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
 
@@ -153,7 +195,7 @@ private fun LastGameCard(lastGame: LastGame) {
 
 @Composable
 private fun CategoriesSection(
-    categories: List<Category>, onCategoryClick: (String) -> Unit
+    categories: List<Category>, marginBot: Dp, onCategoryClick: (Int) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -163,7 +205,8 @@ private fun CategoriesSection(
             style = MaterialTheme.typography.bodyLarge
         )
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(bottom = marginBot)
         ) {
             items(items = categories) { category ->
                 CategoryCard(
@@ -178,8 +221,7 @@ private fun CategoryCard(
     category: Category, onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = White,
@@ -187,13 +229,13 @@ private fun CategoryCard(
         onClick = onClick
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(19.dp)
             ) {
                 Box(
                     modifier = Modifier.size(107.dp), contentAlignment = Alignment.Center
@@ -205,19 +247,16 @@ private fun CategoryCard(
                         contentScale = ContentScale.Crop
                     )
                 }
-                Spacer(modifier = Modifier.width(19.dp))
                 Column {
                     Text(
-                        text = category.name,
-                        style = MaterialTheme.typography.bodyLarge
+                        text = category.name, style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
                         text = stringResource(
                             R.string.home_category_number_question,
                             category.type,
                             category.quizCount
-                        ),
-                        style = MaterialTheme.typography.bodyMedium
+                        ), style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -230,11 +269,22 @@ private fun CategoryCard(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
-    MOBILEMASTERMINDTheme {
-        val viewModel = HomeViewModel()
-        HomeScreen(homeViewModel = viewModel)
+fun ErrorScreen(message: String?, onTimeout: () -> Unit) {
+    LaunchedEffect(Unit) {
+        delay(1500)
+        onTimeout()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White), contentAlignment = Alignment.Center
+    ) {
+        if (message != null) {
+            Text(
+                text = message, color = Black, style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }

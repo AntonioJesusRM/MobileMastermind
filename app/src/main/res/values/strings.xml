@@ -3,9 +3,14 @@
     <string name="app_name_first">MOBILE</string>
     <string name="app_name_second">MASTERMIND</string>
 
-    <!-- General for Login -->
+    <!-- General -->
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
+
+    <!-- String Bottom bar -->
+    <string name="BottomBar_home_label">Inicio</string>
+    <string name="BottomBar_ranking_label">Clasificación</string>
+    <string name="BottomBar_profile_label">Perfil</string>
 
     <!-- Strings for Login -->
     <string name="login_username_placeholder">Introduce tu usuario</string>
@@ -49,28 +54,26 @@
     <!-- String for Ranking -->
     <string name="ranking_profile_image_description">Profile image</string>
     <string name="ranking_title">Clasificación</string>
-    <string name="ranking_your_position">Tu</string>
+    <string name="ranking_your_position">Tú</string>
     <string name="ranking_avatar_content_description">Avatar</string>
     <string name="ranking_medal_content_description">Medalla %dº posicion</string>
     <string name="ranking_crown_content_description">Corona</string>
     <string name="ranking_points">%d puntos</string>
+    <string name="ranking_category_title">%s scores</string>
 
     <!-- String for Profile -->
     <string name="profile_icon_content_description">Ajustes</string>
     <string name="profile_user_content_description">Usuario</string>
     <string name="profile_stat_icon_constent_description">Icono de stat</string>
     <string name="profile_points_title">Puntos</string>
-    <string name="profile_best_score_title">Mejor puntuación</string>
+    <string name="profile_best_score_title">Mejor partida</string>
     <string name="profile_ranking_title">Clasificación</string>
     <string name="profile_title_stats">Estadisticas</string>
-    <string name="profile_stat_best_score">Mejor puntuación</string>
     <string name="profile_stat_unit">pts</string>
-    <string name="ranking_category_title">%s scores</string>
     <string name="profile_stat_best_question">Mejor pregunta</string>
     <string name="profile_stat_total_games">Total de partidas</string>
     <string name="profile_stat_correct_answers">Preguntas correctas</string>
     <string name="profile_stat_incorrect_answers">Preguntas falladas</string>
     <string name="profile_empty_stats">Aun no tienes estadisticas</string>
-
 
 </resources>
