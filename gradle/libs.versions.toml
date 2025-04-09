@@ -22,6 +22,9 @@ coilCompose = "2.0.0"
 #Plugins
 pluginDaggerHilt = "2.51.1"
 
+#Sonarqube
+pluginSonar = "6.0.1.5171"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -60,4 +63,5 @@ hiltPluggin = { id = "com.google.dagger.hilt.android", version.ref = "pluginDagg
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+sonarPluggin = { id = "org.sonarqube", version.ref = "pluginSonar" }
 
