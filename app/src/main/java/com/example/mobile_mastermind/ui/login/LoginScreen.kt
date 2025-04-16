@@ -90,10 +90,10 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
 
             TextFieldInput(
                 modifier = Modifier.fillMaxWidth(), data = TextFieldInputData(
-                value = uiState.username,
-                onValueChange = { loginViewModel.onUsernameChanged(it) },
-                title = stringResource(id = R.string.username),
-                placeholder = stringResource(id = R.string.login_username_placeholder),
+                    value = uiState.username,
+                    onValueChange = { loginViewModel.onUsernameChanged(it) },
+                    title = stringResource(id = R.string.username),
+                    placeholder = stringResource(id = R.string.login_username_placeholder),
                     enabled = !uiState.isLoading,
                     onImeAction = { focusRequesterPassword.requestFocus() })
             )
@@ -111,7 +111,7 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
                     enabled = !uiState.isLoading,
                     imeAction = ImeAction.Done,
                     onImeAction = {
-                        focusManager.submitForm(loginViewModel, uiState)
+                        focusManager.submitForm(loginViewModel)
                     })
             )
 
@@ -120,7 +120,7 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
             } else {
                 PrimaryButton(
                     text = stringResource(id = R.string.login_button),
-                    onClick = { focusManager.submitForm(loginViewModel, uiState) })
+                    onClick = { focusManager.submitForm(loginViewModel) })
             }
         }
 
@@ -139,11 +139,8 @@ fun LoginBody(navController: NavController, uiState: LoginUiState, loginViewMode
 }
 
 private fun FocusManager.submitForm(
-    viewModel: LoginViewModel, state: LoginUiState
+    viewModel: LoginViewModel
 ) {
     clearFocus(force = true)
-    viewModel.onLoginClicked(
-        username = state.username,
-        password = state.password,
-    )
+    viewModel.onLoginClicked()
 }
