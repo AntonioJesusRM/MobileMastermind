@@ -1,10 +1,12 @@
 package com.example.mobile_mastermind.data.repository.preferences
 
+import com.example.mobile_mastermind.data.session.DataUserSession
 import javax.inject.Inject
 
 class PreferencesDataSource @Inject constructor(
     private val encryptedSharedPreferencesManager: EncryptedSharedPreferencesManager,
-    private val sharedPreferencesManager: SharedPreferencesManager
+    private val sharedPreferencesManager: SharedPreferencesManager,
+    private val dataUserSession: DataUserSession
 ) {
     fun saveRefreshToken(token: String) {
         encryptedSharedPreferencesManager.saveStringEncryptedSharedPreferences(
@@ -22,6 +24,7 @@ class PreferencesDataSource @Inject constructor(
         encryptedSharedPreferencesManager.saveStringEncryptedSharedPreferences(
             EncryptedSharedPreferencesKeys.ENCRYPTED_SHARED_PREFERENCES_ACCESS_TOKEN, token
         )
+        dataUserSession.accessToken = token
     }
 
     fun getAccessToken(): String {
@@ -37,16 +40,17 @@ class PreferencesDataSource @Inject constructor(
         )
     }
 
-    fun getTokenExpired(time: Int) {
+    fun getTokenExpired() {
         sharedPreferencesManager.getIntSharedPreferences(
             SharedPreferencesKeys.SHARED_PREFERENCES_TOKEN_EXPIRED
         )
     }
 
-    fun saveUsername(image: String) {
+    fun saveUsername(name: String) {
         sharedPreferencesManager.saveStringSharedPreferences(
-            SharedPreferencesKeys.SHARED_PREFERENCES_USERNAME, image
+            SharedPreferencesKeys.SHARED_PREFERENCES_USERNAME, name
         )
+        dataUserSession.username = name
     }
 
     fun getUsername(): String {
@@ -59,6 +63,7 @@ class PreferencesDataSource @Inject constructor(
         sharedPreferencesManager.saveStringSharedPreferences(
             SharedPreferencesKeys.SHARED_PREFERENCES_IMAGE, image
         )
+        dataUserSession.userImage = image
     }
 
     fun getProfilePicture(): String {

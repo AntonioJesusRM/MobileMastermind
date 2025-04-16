@@ -5,13 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.data.session.DataUserSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeViewModel @Inject constructor(private val dataUserSession: DataUserSession) :
+    ViewModel() {
     private val _uiState = mutableStateOf(HomeUiState())
     val uiState: State<HomeUiState> = _uiState
 
@@ -25,9 +27,9 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             try {
                 delay(1000)
                 _uiState.value = HomeUiState(
-                    userName = "Andrés",
+                    userName = dataUserSession.username,
                     points = 300,
-                    userImg = R.drawable.ic_launcher_foreground,
+                    userImg = dataUserSession.userImage,
                     lastGame = LastGame(1, R.drawable.ic_launcher_foreground, 200),
                     categories = listOf(
                         Category(1, "Kotlin", "Language", 10, R.drawable.ic_launcher_foreground),

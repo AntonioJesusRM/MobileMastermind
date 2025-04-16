@@ -7,4 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface DataSource {
     //LoginUser
     fun postLoginUser(loginUserRequest: LoginUserRequest): Flow<BaseResponse<Boolean>>
+
+    //Preferences
+    fun clearPreferences()
 }

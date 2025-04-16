@@ -7,7 +7,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val userName: String = "",
-    val userImg: Int = 0,
+    val userImg: String = "",
     val points: Int = 0,
     val lastGame: LastGame = LastGame(0, 0, 0),
     val categories: List<Category> = emptyList(),

@@ -19,8 +19,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +42,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.ui.components.BottomNav
@@ -73,7 +78,10 @@ fun ProfileScreen(
                 containerColor = Color.Transparent,
                 bottomBar = { BottomNav(navController) }) { padding ->
                 ProfileBody(
-                    uiState = uiState, marginBot = padding.calculateBottomPadding()
+                    uiState = uiState,
+                    marginBot = padding.calculateBottomPadding(),
+                    onLogoutClick = { profileViewModel.onLogoutClick() },
+                    navController
                 )
             }
         }
@@ -81,14 +89,18 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileBody(uiState: ProfileUiState, marginBot: Dp) {
+private fun ProfileBody(
+    uiState: ProfileUiState, marginBot: Dp, onLogoutClick: () -> Unit, navController: NavController
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp, 25.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ProfileCard(modifier = Modifier, uiState.profileImg, uiState.name)
+        ProfileCard(
+            modifier = Modifier, uiState.profileImg, uiState.name, onLogoutClick, navController
+        )
         Spacer(modifier = Modifier.height(11.dp))
         DataCard(modifier = Modifier, uiState.points, uiState.bestScore, uiState.ranking)
         Spacer(modifier = Modifier.height(13.dp))
@@ -204,8 +216,7 @@ private fun StatCard(stat: StatItem) {
             if (stat.statBackground != null) {
                 PutImage(stat.statBackground, stat.statImg, stat.statColor, 50)
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
@@ -318,7 +329,11 @@ private fun ProfileStatItem(
 
 @Composable
 private fun ProfileCard(
-    modifier: Modifier = Modifier, userImg: Int?, userName: String
+    modifier: Modifier = Modifier,
+    userImg: String,
+    userName: String,
+    onLogoutClick: () -> Unit,
+    navController: NavController
 ) {
     Card(
         modifier = modifier
@@ -327,29 +342,42 @@ private fun ProfileCard(
             containerColor = BackgroundLight,
         )
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                contentAlignment = Alignment.Center, modifier = Modifier.align(Alignment.Center)
+            Spacer(modifier = Modifier.weight(1f))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(bottom = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    if (userImg != null) {
-                        Image(
-                            painter = painterResource(userImg),
-                            contentDescription = stringResource(R.string.profile_user_content_description),
-                            modifier = Modifier
-                                .size(150.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
+                AsyncImage(
+                    model = userImg,
+                    contentDescription = stringResource(R.string.profile_user_content_description),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                )
+                Text(
+                    text = userName, style = MaterialTheme.typography.titleLarge
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(), contentAlignment = Alignment.TopEnd
+            ) {
+                IconButton(onClick = {
+                    onLogoutClick()
+                    navController.navigate(Login.route) {
+                        popUpTo(0) { inclusive = true }
                     }
-                    Text(
-                        text = userName, style = MaterialTheme.typography.titleLarge
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = stringResource(R.string.profile_close_session),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }

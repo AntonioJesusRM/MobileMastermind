@@ -19,5 +19,4 @@ class DataUserSession @Inject constructor() : Serializable {
         userImage = ""
         accessToken = ""
     }
-
 }

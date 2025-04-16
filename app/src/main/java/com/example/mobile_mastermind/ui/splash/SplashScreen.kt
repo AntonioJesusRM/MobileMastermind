@@ -11,31 +11,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mobile_mastermind.Home
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.data.session.DataUserSession
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavController, dataUserSession: DataUserSession) {
 
     LaunchedEffect(Unit) {
         delay(1500)
-        val destination = Login.route
+        val destination = if (dataUserSession.haveSession()) Home.route else Login.route
         navController.navigate(destination) {
             popUpTo("splash") { inclusive = true }
         }
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo_mobilemastermind),
             contentDescription = "App Logo",
-            modifier = Modifier
-                .size(400.dp)
+            modifier = Modifier.size(400.dp)
         )
     }
 }

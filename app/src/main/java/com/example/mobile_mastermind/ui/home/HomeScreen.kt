@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
@@ -93,9 +94,7 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
             lastGame = uiState.lastGame
         )
         CategoriesSection(
-            categories = uiState.categories,
-            marginBot,
-            onCategoryClick = { index ->
+            categories = uiState.categories, marginBot, onCategoryClick = { index ->
                 val category = uiState.categories[index - 1]
                 navController.currentBackStackEntry?.savedStateHandle?.set("category", category)
                 navController.navigate(Game.route)
@@ -105,7 +104,7 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
 
 @Composable
 private fun UserInfoSection(
-    userName: String, userImg: Int, points: Int, lastGame: LastGame
+    userName: String, userImg: String, points: Int, lastGame: LastGame
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(31.dp)
@@ -121,19 +120,14 @@ private fun UserInfoSection(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(
+                AsyncImage(
+                    model = userImg,
+                    contentDescription = stringResource(R.string.home_user_image_content_description),
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(userImg),
-                        contentDescription = stringResource(R.string.home_user_image_content_description),
-                        modifier = Modifier.size(50.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                        .clip(CircleShape)
+                )
                 Column {
                     Text(
                         text = stringResource(R.string.home_greeting_msg),

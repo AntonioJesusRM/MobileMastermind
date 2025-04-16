@@ -75,5 +75,6 @@
     <string name="profile_stat_correct_answers">Preguntas correctas</string>
     <string name="profile_stat_incorrect_answers">Preguntas falladas</string>
     <string name="profile_empty_stats">Aun no tienes estadisticas</string>
+    <string name="profile_close_session">Cerrar sesión</string>
 
 </resources>

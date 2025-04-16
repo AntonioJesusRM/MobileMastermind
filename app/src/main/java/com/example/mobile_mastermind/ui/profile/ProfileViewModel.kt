@@ -4,7 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.data.session.DataUserSession
+import com.example.mobile_mastermind.domain.usecase.preferences.ClearPreferencesUseCase
 import com.example.mobile_mastermind.ui.theme.GreenLight
 import com.example.mobile_mastermind.ui.theme.RedLight
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor() : ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val dataUserSession: DataUserSession,
+    private val clearPreferencesUseCase: ClearPreferencesUseCase
+) : ViewModel() {
     private val _uiState = mutableStateOf(ProfileUiState())
     val uiState: State<ProfileUiState> = _uiState
 
@@ -27,9 +31,8 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
             try {
                 delay(1000)
                 _uiState.value = ProfileUiState(
-                    profileImg = R.drawable.ic_launcher_foreground,
-                    name = "Andrés",
-                    email = "andres@gmail.com",
+                    profileImg = dataUserSession.userImage,
+                    name = dataUserSession.username,
                     points = 300,
                     bestScore = 300,
                     ranking = 13,
@@ -42,8 +45,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
                             correctAnswers = 45,
                             incorrectAnswers = 5,
                             colorCategory = RedLight
-                        ),
-                        CategoryStats(
+                        ), CategoryStats(
                             title = "Android",
                             bestScore = 400,
                             bestQuestion = 152,
@@ -61,5 +63,10 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
                 _uiState.value = _uiState.value.copy(isLoading = false)
             }
         }
+    }
+
+    fun onLogoutClick() {
+        clearPreferencesUseCase()
+        dataUserSession.clearSession()
     }
 }

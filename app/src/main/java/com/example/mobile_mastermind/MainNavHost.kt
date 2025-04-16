@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mobile_mastermind.data.session.DataUserSession
 import com.example.mobile_mastermind.ui.game.GameScreen
 import com.example.mobile_mastermind.ui.game.ResumeGame
 import com.example.mobile_mastermind.ui.home.Category
@@ -20,7 +21,7 @@ import com.example.mobile_mastermind.ui.splash.SplashScreen
 
 @Composable
 fun MainNavHost(
-    navController: NavHostController, startDestination: String
+    navController: NavHostController, dataUserSession: DataUserSession, startDestination: String
 ) {
     val context = LocalContext.current
     BackHandler {
@@ -34,7 +35,7 @@ fun MainNavHost(
         navController = navController, startDestination = startDestination
     ) {
         composable(route = Splash.route) {
-            SplashScreen(navController)
+            SplashScreen(navController, dataUserSession)
         }
         composable(route = Register.route) {
             RegisterScreen(navController)
