@@ -3,6 +3,7 @@ package com.example.mobile_mastermind.data.repository.remote
 import com.example.mobile_mastermind.data.repository.preferences.PreferencesDataSource
 import com.example.mobile_mastermind.data.repository.remote.backend.RemoteDataSource
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
+import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -17,6 +18,10 @@ class DataProvider @Inject constructor(
     //LoginUser
     override fun postLoginUser(loginUserRequest: LoginUserRequest): Flow<BaseResponse<Boolean>> {
         return remoteDataSource.postLoginUser(loginUserRequest)
+    }
+
+    override fun postRegister(registerRequest: RegisterRequest): Flow<BaseResponse<Boolean>> {
+        return remoteDataSource.postRegister(registerRequest)
     }
 
     //Preferences

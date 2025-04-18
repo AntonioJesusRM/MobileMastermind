@@ -122,7 +122,7 @@ private fun UserInfoSection(
             ) {
                 AsyncImage(
                     model = userImg,
-                    contentDescription = stringResource(R.string.home_user_image_content_description),
+                    contentDescription = stringResource(R.string.user_image_content_description),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(60.dp)
@@ -163,7 +163,7 @@ private fun LastGameCard(lastGame: LastGame) {
             ) {
                 Image(
                     painter = painterResource(lastGame.iconRes),
-                    contentDescription = stringResource(R.string.home_user_image_content_description),
+                    contentDescription = stringResource(R.string.user_image_content_description),
                     modifier = Modifier.size(80.dp),
                     contentScale = ContentScale.Crop
                 )

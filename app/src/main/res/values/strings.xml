@@ -6,6 +6,7 @@
     <!-- General -->
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
+    <string name="user_image_content_description">Foto de perfil</string>
 
     <!-- String Bottom bar -->
     <string name="BottomBar_home_label">Inicio</string>
@@ -28,6 +29,7 @@
     <string name="register_button">Regístrate</string>
     <string name="register_login_prompt">¿Ya tienes una cuenta?</string>
     <string name="register_login_prompt_clickable">Inicia sesión</string>
+    <string name="register_select_profile_image">Selecciona una foto</string>
 
     <!-- Strings for Result -->
     <string name="result_category">Categoría:</string>
@@ -36,7 +38,6 @@
     <!-- String for Home -->
     <string name="home_greeting_msg">Hola!</string>
     <string name="home_user_points">%d puntos</string>
-    <string name="home_user_image_content_description">Imagen del usuario</string>
     <string name="home_last_game_text">Última partida:</string>
     <string name="home_title_categories">Categorias</string>
     <string name="home_icon_arrow_content_description">"Icono flecha horizontal para ir hacia delante"</string>

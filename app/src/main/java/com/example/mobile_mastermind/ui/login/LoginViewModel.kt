@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
-import com.example.mobile_mastermind.data.session.DataUserSession
 import com.example.mobile_mastermind.domain.usecase.remote.PostLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val postLoginUseCase: PostLoginUseCase,
-    private val dataUserSession: DataUserSession
+    private val postLoginUseCase: PostLoginUseCase
 ) : ViewModel() {
     private val _uiState = mutableStateOf(LoginUiState())
     val uiState: State<LoginUiState> = _uiState

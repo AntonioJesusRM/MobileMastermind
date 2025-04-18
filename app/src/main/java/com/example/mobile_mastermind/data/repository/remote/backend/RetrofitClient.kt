@@ -91,6 +91,11 @@ class RetrofitClient @Inject constructor(
                 false
             }
 
+            requestUrl.endsWith("api/users/register", true) -> {
+                Log.d(TAG, "%> No needAddBearer endsWith(register)")
+                false
+            }
+
             else -> {
                 Log.d(TAG, "%> Get token")
                 true
