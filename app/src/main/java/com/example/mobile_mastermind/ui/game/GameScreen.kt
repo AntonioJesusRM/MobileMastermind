@@ -50,8 +50,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mobile_mastermind.Home
 import com.example.mobile_mastermind.Review
+import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
 import com.example.mobile_mastermind.ui.components.ProgressCircle
-import com.example.mobile_mastermind.ui.home.Category
 import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.Black
@@ -65,7 +65,9 @@ import kotlin.math.ceil
 
 @Composable
 fun GameScreen(
-    category: Category, navController: NavController, gameViewModel: GameViewModel = hiltViewModel()
+    category: GetCategoriesModel,
+    navController: NavController,
+    gameViewModel: GameViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
         gameViewModel.loadQuestions(category)

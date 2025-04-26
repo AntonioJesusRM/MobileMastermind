@@ -1,12 +1,12 @@
 package com.example.mobile_mastermind.data.repository.preferences
 
-import com.example.mobile_mastermind.data.session.DataUserSession
+import android.util.Log
+import com.example.mobile_mastermind.ui.extension.TAG
 import javax.inject.Inject
 
 class PreferencesDataSource @Inject constructor(
     private val encryptedSharedPreferencesManager: EncryptedSharedPreferencesManager,
     private val sharedPreferencesManager: SharedPreferencesManager,
-    private val dataUserSession: DataUserSession
 ) {
     fun saveRefreshToken(token: String) {
         encryptedSharedPreferencesManager.saveStringEncryptedSharedPreferences(
@@ -15,6 +15,7 @@ class PreferencesDataSource @Inject constructor(
     }
 
     fun getRefreshToken(): String {
+        Log.d(TAG, "%> Estoy en Preferences data source CUIDADO REFRESH")
         return encryptedSharedPreferencesManager.getStringEncryptedSharedPreferences(
             EncryptedSharedPreferencesKeys.ENCRYPTED_SHARED_PREFERENCES_REFRESH_TOKEN
         )
@@ -24,10 +25,10 @@ class PreferencesDataSource @Inject constructor(
         encryptedSharedPreferencesManager.saveStringEncryptedSharedPreferences(
             EncryptedSharedPreferencesKeys.ENCRYPTED_SHARED_PREFERENCES_ACCESS_TOKEN, token
         )
-        dataUserSession.accessToken = token
     }
 
     fun getAccessToken(): String {
+        Log.d(TAG, "%> Estoy en Preferences data source CUIDADO ACCESS")
         return encryptedSharedPreferencesManager.getStringEncryptedSharedPreferences(
             EncryptedSharedPreferencesKeys.ENCRYPTED_SHARED_PREFERENCES_ACCESS_TOKEN
         )
@@ -40,9 +41,22 @@ class PreferencesDataSource @Inject constructor(
         )
     }
 
-    fun getTokenExpired() {
-        sharedPreferencesManager.getIntSharedPreferences(
+    fun getTokenExpired(): Int {
+        return sharedPreferencesManager.getIntSharedPreferences(
             SharedPreferencesKeys.SHARED_PREFERENCES_TOKEN_EXPIRED
+        )
+    }
+
+    fun saveTokenIssuedAt(timestamp: Long) {
+        sharedPreferencesManager.saveLongSharedPreferences(
+            SharedPreferencesKeys.SHARED_PREFERENCES_TOKEN_ISSUED_AT,
+            timestamp
+        )
+    }
+
+    fun getTokenIssuedAt(): Long {
+        return sharedPreferencesManager.getLongSharedPreferences(
+            SharedPreferencesKeys.SHARED_PREFERENCES_TOKEN_ISSUED_AT
         )
     }
 
@@ -50,7 +64,6 @@ class PreferencesDataSource @Inject constructor(
         sharedPreferencesManager.saveStringSharedPreferences(
             SharedPreferencesKeys.SHARED_PREFERENCES_USERNAME, name
         )
-        dataUserSession.username = name
     }
 
     fun getUsername(): String {
@@ -63,7 +76,6 @@ class PreferencesDataSource @Inject constructor(
         sharedPreferencesManager.saveStringSharedPreferences(
             SharedPreferencesKeys.SHARED_PREFERENCES_IMAGE, image
         )
-        dataUserSession.userImage = image
     }
 
     fun getProfilePicture(): String {

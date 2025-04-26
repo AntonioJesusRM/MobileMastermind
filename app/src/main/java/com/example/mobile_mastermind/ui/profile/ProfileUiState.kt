@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 data class ProfileUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val name: String = "",
+    val username: String = "",
     val profileImg: String = "",
     val points: Int = 0,
     val bestScore: Int = 0,
@@ -31,3 +31,8 @@ data class StatItem(
     val unit: String? = null,
     val statColor: Color
 )
+
+sealed class LogoutResult {
+    data object Success : LogoutResult()
+    data class Error(val message: String) : LogoutResult()
+}

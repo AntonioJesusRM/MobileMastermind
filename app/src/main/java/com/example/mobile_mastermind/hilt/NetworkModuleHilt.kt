@@ -13,7 +13,7 @@ import javax.inject.Singleton
 object NetworkModuleHilt {
     @Provides
     @Singleton
-    fun provideApiService42(retrofitClient: RetrofitClient): ApiService {
+    fun provideApiService(retrofitClient: RetrofitClient): ApiService {
         return retrofitClient.retrofit.create(ApiService::class.java)
     }
 }

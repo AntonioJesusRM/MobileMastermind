@@ -5,6 +5,7 @@ import com.example.mobile_mastermind.data.repository.remote.backend.RemoteDataSo
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
 import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
+import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,13 +16,24 @@ class DataProvider @Inject constructor(
     private val preferencesDataSource: PreferencesDataSource
 ) : DataSource {
 
-    //LoginUser
+    //Login
     override fun postLoginUser(loginUserRequest: LoginUserRequest): Flow<BaseResponse<Boolean>> {
         return remoteDataSource.postLoginUser(loginUserRequest)
     }
 
+    //Register
     override fun postRegister(registerRequest: RegisterRequest): Flow<BaseResponse<Boolean>> {
         return remoteDataSource.postRegister(registerRequest)
+    }
+
+    //Logout
+    override fun postLogout(): Flow<BaseResponse<Boolean>> {
+        return remoteDataSource.postLogout()
+    }
+
+    //Get all categories
+    override fun getCategories(): Flow<BaseResponse<List<GetCategoriesModel>>> {
+        return remoteDataSource.getCategories()
     }
 
     //Preferences

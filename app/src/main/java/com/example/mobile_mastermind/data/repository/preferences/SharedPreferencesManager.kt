@@ -49,6 +49,15 @@ class SharedPreferencesManager @Inject constructor(
         return number
     }
 
+    fun saveLongSharedPreferences(key: String, value: Long) {
+        set(key, value)
+    }
+
+    fun getLongSharedPreferences(key: String, defaultValue: Long = 0L): Long {
+        val number = sharedPreferences.getLong(key, defaultValue)
+        return number
+    }
+
     fun clearAllPreferences() {
         edit { it.clear() }
     }

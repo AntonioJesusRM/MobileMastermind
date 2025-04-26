@@ -5,15 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import com.example.mobile_mastermind.data.session.DataUserSession
+import com.example.mobile_mastermind.domain.usecase.remote.GetCategoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val dataUserSession: DataUserSession) :
-    ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val dataUserSession: DataUserSession,
+    private val getCategoriesUseCase: GetCategoriesUseCase
+) : ViewModel() {
     private val _uiState = mutableStateOf(HomeUiState())
     val uiState: State<HomeUiState> = _uiState
 
@@ -24,27 +27,27 @@ class HomeViewModel @Inject constructor(private val dataUserSession: DataUserSes
     private fun loadData() {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
-            try {
-                delay(1000)
-                _uiState.value = HomeUiState(
-                    userName = dataUserSession.username,
-                    points = 300,
-                    userImg = dataUserSession.userImage,
-                    lastGame = LastGame(1, R.drawable.ic_launcher_foreground, 200),
-                    categories = listOf(
-                        Category(1, "Kotlin", "Language", 10, R.drawable.ic_launcher_foreground),
-                        Category(2, "Swift", "Language", 10, R.drawable.ic_launcher_foreground),
-                        Category(
-                            3, "Android Studio", "IDE", 10, R.drawable.ic_launcher_foreground
-                        ),
-                        Category(4, "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
-                    )
-                )
-            } catch (e: Exception) {
-                _uiState.value =
-                    _uiState.value.copy(errorMessage = e.localizedMessage ?: "Error desconocido")
-            } finally {
-                _uiState.value = _uiState.value.copy(isLoading = false)
+            getCategoriesUseCase().collect { baseResponse ->
+                when (baseResponse) {
+                    is BaseResponse.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false
+                        )
+                        _uiState.value = HomeUiState(
+                            userName = dataUserSession.username,
+                            points = 300,
+                            userImg = dataUserSession.userImage,
+                            lastGame = LastGame(1, R.drawable.ic_launcher_foreground, 200),
+                            categories = baseResponse.data
+                        )
+                    }
+
+                    is BaseResponse.Error -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false
+                        )
+                    }
+                }
             }
         }
     }

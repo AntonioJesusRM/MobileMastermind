@@ -29,6 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +64,16 @@ fun ProfileScreen(
     navController: NavController, profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState = profileViewModel.uiState.value
+    val logoutResult by profileViewModel.logoutResult.collectAsState()
+
+    LaunchedEffect(logoutResult) {
+        if (logoutResult is LogoutResult.Success) {
+            profileViewModel.clearState()
+            navController.navigate(Login.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
 
     when {
         uiState.isLoading -> ProgressCircle()
@@ -80,9 +93,7 @@ fun ProfileScreen(
                 ProfileBody(
                     uiState = uiState,
                     marginBot = padding.calculateBottomPadding(),
-                    onLogoutClick = { profileViewModel.onLogoutClick() },
-                    navController
-                )
+                    onLogoutClick = { profileViewModel.onLogoutClick() })
             }
         }
     }
@@ -90,7 +101,7 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileBody(
-    uiState: ProfileUiState, marginBot: Dp, onLogoutClick: () -> Unit, navController: NavController
+    uiState: ProfileUiState, marginBot: Dp, onLogoutClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -99,7 +110,7 @@ private fun ProfileBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ProfileCard(
-            modifier = Modifier, uiState.profileImg, uiState.name, onLogoutClick, navController
+            modifier = Modifier, uiState, onLogoutClick
         )
         Spacer(modifier = Modifier.height(11.dp))
         DataCard(modifier = Modifier, uiState.points, uiState.bestScore, uiState.ranking)
@@ -329,11 +340,7 @@ private fun ProfileStatItem(
 
 @Composable
 private fun ProfileCard(
-    modifier: Modifier = Modifier,
-    userImg: String,
-    userName: String,
-    onLogoutClick: () -> Unit,
-    navController: NavController
+    modifier: Modifier = Modifier, uiState: ProfileUiState, onLogoutClick: () -> Unit
 ) {
     Card(
         modifier = modifier
@@ -351,7 +358,7 @@ private fun ProfileCard(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 AsyncImage(
-                    model = userImg,
+                    model = uiState.profileImg,
                     contentDescription = stringResource(R.string.profile_user_content_description),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -359,7 +366,7 @@ private fun ProfileCard(
                         .clip(CircleShape)
                 )
                 Text(
-                    text = userName, style = MaterialTheme.typography.titleLarge
+                    text = uiState.username, style = MaterialTheme.typography.titleLarge
                 )
             }
 
@@ -370,9 +377,6 @@ private fun ProfileCard(
             ) {
                 IconButton(onClick = {
                     onLogoutClick()
-                    navController.navigate(Login.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Logout,

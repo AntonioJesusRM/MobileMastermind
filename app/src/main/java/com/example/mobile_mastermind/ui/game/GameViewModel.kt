@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.R
-import com.example.mobile_mastermind.ui.home.Category
+import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,12 +16,12 @@ class GameViewModel @Inject constructor() : ViewModel() {
     private val _uiState = mutableStateOf(GameUiState())
     val uiState: State<GameUiState> = _uiState
 
-    fun loadQuestions(category: Category) {
+    fun loadQuestions(category: GetCategoriesModel) {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {
                 delay(1000)
-                require(category.id == 1) { "Solo la categoría 1 está disponible en este momento" }
+                require(category.id == "1") { "Solo la categoría 1 está disponible en este momento" }
                 _uiState.value = GameUiState(
                     questions = listOf(
                         Question(
