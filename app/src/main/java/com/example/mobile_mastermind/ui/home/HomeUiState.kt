@@ -1,6 +1,6 @@
 package com.example.mobile_mastermind.ui.home
 
-import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -9,7 +9,7 @@ data class HomeUiState(
     val userImg: String = "",
     val points: Int = 0,
     val lastGame: LastGame = LastGame(0, 0, 0),
-    val categories: List<GetCategoriesModel> = emptyList(),
+    val categories: List<CategoryModel> = emptyList(),
 )
 
 data class LastGame(

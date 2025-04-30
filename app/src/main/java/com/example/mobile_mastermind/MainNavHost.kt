@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mobile_mastermind.data.session.DataUserSession
-import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import com.example.mobile_mastermind.ui.game.GameScreen
 import com.example.mobile_mastermind.ui.game.ResumeGame
 import com.example.mobile_mastermind.ui.home.HomeScreen
@@ -48,7 +48,7 @@ fun MainNavHost(
         }
         composable(Game.route) {
             val category =
-                navController.previousBackStackEntry?.savedStateHandle?.get<GetCategoriesModel>("category")
+                navController.previousBackStackEntry?.savedStateHandle?.get<CategoryModel>("category")
 
             category?.let {
                 GameScreen(category = it, navController)

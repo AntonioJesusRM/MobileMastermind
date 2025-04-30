@@ -41,7 +41,7 @@ import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
-import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import com.example.mobile_mastermind.ui.components.BottomNav
 import com.example.mobile_mastermind.ui.components.ProgressCircle
 import com.example.mobile_mastermind.ui.extension.TAG
@@ -193,7 +193,7 @@ private fun LastGameCard(lastGame: LastGame) {
 
 @Composable
 private fun CategoriesSection(
-    categories: List<GetCategoriesModel>, marginBot: Dp, onCategoryClick: (String) -> Unit
+    categories: List<CategoryModel>, marginBot: Dp, onCategoryClick: (String) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -216,7 +216,7 @@ private fun CategoriesSection(
 
 @Composable
 private fun CategoryCard(
-    category: GetCategoriesModel, onClick: () -> Unit
+    category: CategoryModel, onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),

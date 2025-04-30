@@ -4,6 +4,7 @@ import com.example.mobile_mastermind.data.repository.remote.request.LoginUserReq
 import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetCategoriesResponse
+import com.example.mobile_mastermind.data.repository.remote.response.users.GetProfileResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.PostLoginResponse
 import javax.inject.Inject
 
@@ -36,4 +37,10 @@ class CallApiService @Inject constructor(
     suspend fun callGetCategories(): BaseResponse<GetCategoriesResponse> {
         return apiCall { apiService.getCategories() }
     }
+
+    //Get profile
+    suspend fun callGetProfile(): BaseResponse<GetProfileResponse> {
+        return apiCall { apiService.getProfile() }
+    }
+
 }

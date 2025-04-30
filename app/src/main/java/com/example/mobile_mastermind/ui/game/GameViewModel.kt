@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_mastermind.R
-import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ class GameViewModel @Inject constructor() : ViewModel() {
     private val _uiState = mutableStateOf(GameUiState())
     val uiState: State<GameUiState> = _uiState
 
-    fun loadQuestions(category: GetCategoriesModel) {
+    fun loadQuestions(category: CategoryModel) {
         _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
             try {

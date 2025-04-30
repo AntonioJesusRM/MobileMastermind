@@ -1,12 +1,14 @@
 package com.example.mobile_mastermind.data.repository.remote.backend
 
 import com.example.mobile_mastermind.data.mapper.game.GetCategoriesMapper
+import com.example.mobile_mastermind.data.mapper.users.GetProfileMapper
 import com.example.mobile_mastermind.data.repository.preferences.PreferencesDataSource
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
 import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import com.example.mobile_mastermind.data.session.DataUserSession
-import com.example.mobile_mastermind.domain.model.game.GetCategoriesModel
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -78,7 +80,7 @@ class RemoteDataSource @Inject constructor(
     }
 
     //Get all categories
-    fun getCategories(): Flow<BaseResponse<List<GetCategoriesModel>>> = flow {
+    fun getCategories(): Flow<BaseResponse<List<CategoryModel>>> = flow {
         val apiResult = callApiService.callGetCategories()
         if (apiResult is BaseResponse.Success) {
             emit(BaseResponse.Success(GetCategoriesMapper().fromResponse(apiResult.data)))
@@ -86,4 +88,16 @@ class RemoteDataSource @Inject constructor(
             emit(BaseResponse.Error(apiResult.error))
         }
     }
+
+    //Get profile
+    fun getProfile(): Flow<BaseResponse<GetProfileModel>> = flow {
+        val apiResult = callApiService.callGetProfile()
+        if (apiResult is BaseResponse.Success) {
+            emit(BaseResponse.Success(GetProfileMapper().fromResponse(apiResult.data)))
+        } else if (apiResult is BaseResponse.Error) {
+            emit(BaseResponse.Error(apiResult.error))
+        }
+    }
+
+
 }

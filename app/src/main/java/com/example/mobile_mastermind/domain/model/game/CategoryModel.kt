@@ -4,7 +4,7 @@ import com.example.mobile_mastermind.domain.model.BaseModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GetCategoriesModel(
+data class CategoryModel(
     val id: String,
     val type: String,
     val name: String,

@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 
 val Any.TAG: String
     get() {
@@ -58,5 +59,14 @@ fun PutImage(
                 modifier = Modifier.fillMaxSize()
             )
         }
+    }
+}
+
+@Composable
+fun String.toComposeColor(): Color {
+    return try {
+        Color("#$this".toColorInt())
+    } catch (e: Exception) {
+        Color.White
     }
 }
