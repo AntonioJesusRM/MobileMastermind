@@ -4,6 +4,7 @@ import com.example.mobile_mastermind.data.repository.remote.request.LoginUserReq
 import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 
@@ -19,6 +20,13 @@ interface DataSource {
 
     //Get all categories
     fun getCategories(): Flow<BaseResponse<List<CategoryModel>>>
+
+    //Get total points
+    fun getUserTotalPoints(): Flow<BaseResponse<Int>>
+
+
+    //Get last user game
+    fun getLastGame(): Flow<BaseResponse<LastGameModel>>
 
     //Get Profile
     fun getProfile(): Flow<BaseResponse<GetProfileModel>>

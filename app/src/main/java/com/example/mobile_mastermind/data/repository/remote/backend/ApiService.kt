@@ -3,6 +3,8 @@ package com.example.mobile_mastermind.data.repository.remote.backend
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
 import com.example.mobile_mastermind.data.repository.remote.response.SuccessWrapper
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetCategoriesResponse
+import com.example.mobile_mastermind.data.repository.remote.response.game.GetLastUserGameResponse
+import com.example.mobile_mastermind.data.repository.remote.response.game.GetUserTotalPointsResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.GetProfileResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.PostLoginResponse
 import okhttp3.MultipartBody
@@ -41,8 +43,19 @@ interface ApiService {
     suspend fun getCategories(
     ): Response<SuccessWrapper<GetCategoriesResponse>>
 
+    //Get total points
+    @GET("api/games/getUserTotalPoints")
+    suspend fun getTotalPoints(
+    ): Response<SuccessWrapper<GetUserTotalPointsResponse>>
+
+    //Get last user game
+    @GET("api/games/getLastUserGame")
+    suspend fun getLastUserGame(
+    ): Response<SuccessWrapper<GetLastUserGameResponse>>
+
     //Get profile
     @GET("api/users/profile")
     suspend fun getProfile(
     ): Response<SuccessWrapper<GetProfileResponse>>
+
 }

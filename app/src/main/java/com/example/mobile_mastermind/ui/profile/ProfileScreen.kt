@@ -50,6 +50,7 @@ import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.domain.model.users.CategoryStatsModel
 import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.EmptyList
 import com.example.mobile_mastermind.ui.components.ProgressCircle
 import com.example.mobile_mastermind.ui.extension.PutImage
 import com.example.mobile_mastermind.ui.extension.toComposeColor
@@ -128,9 +129,7 @@ private fun ProfileBody(
 
 @Composable
 private fun StatsCard(
-    modifier: Modifier = Modifier,
-    stats: List<CategoryStatsModel>,
-    marginBot: Dp
+    modifier: Modifier = Modifier, stats: List<CategoryStatsModel>, marginBot: Dp
 ) {
     Card(
         modifier = modifier.fillMaxSize(),
@@ -139,14 +138,7 @@ private fun StatsCard(
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         if (stats.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.profile_empty_stats),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+            EmptyList(modifier = modifier, text = stringResource(R.string.profile_empty_stats))
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(13.dp),
@@ -167,39 +159,34 @@ private fun StatCategoryItem(category: CategoryStatsModel) {
             statImg = null,
             title = category.category.name,
             statColor = category.category.color.toComposeColor()
-        ),
-        StatItem(
+        ), StatItem(
             statImg = R.drawable.stat_check_item,
             title = stringResource(R.string.profile_best_score_title),
             statBackground = R.drawable.stat_best_background,
             value = category.bestScore,
             unit = stringResource(R.string.profile_stat_unit),
             statColor = category.category.color.toComposeColor()
-        ),
-        StatItem(
+        ), StatItem(
             statImg = R.drawable.stat_best_question_item,
             title = stringResource(R.string.profile_stat_best_question),
             statBackground = R.drawable.stat_best_background,
             value = category.bestQuestion,
             unit = stringResource(R.string.profile_stat_unit),
             statColor = category.category.color.toComposeColor()
-        ),
-        StatItem(
+        ), StatItem(
             statBackground = R.drawable.stat_total_games_item,
             title = stringResource(R.string.profile_stat_total_games),
             value = category.totalGames,
             unit = "",
             statColor = category.category.color.toComposeColor()
-        ),
-        StatItem(
+        ), StatItem(
             statImg = R.drawable.stat_check_item,
             title = stringResource(R.string.profile_stat_correct_answers),
             statBackground = R.drawable.stat_answer_background,
             value = category.correctAnswers,
             unit = "",
             statColor = category.category.color.toComposeColor()
-        ),
-        StatItem(
+        ), StatItem(
             statImg = R.drawable.stat_incorrect_answer_item,
             title = stringResource(R.string.profile_stat_incorrect_answers),
             statBackground = R.drawable.stat_answer_background,

@@ -1,6 +1,7 @@
 package com.example.mobile_mastermind.data.repository.remote.backend
 
 import com.example.mobile_mastermind.data.mapper.game.GetCategoriesMapper
+import com.example.mobile_mastermind.data.mapper.game.GetLastGameMapper
 import com.example.mobile_mastermind.data.mapper.users.GetProfileMapper
 import com.example.mobile_mastermind.data.repository.preferences.PreferencesDataSource
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
@@ -8,6 +9,7 @@ import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequ
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import com.example.mobile_mastermind.data.session.DataUserSession
 import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -84,6 +86,28 @@ class RemoteDataSource @Inject constructor(
         val apiResult = callApiService.callGetCategories()
         if (apiResult is BaseResponse.Success) {
             emit(BaseResponse.Success(GetCategoriesMapper().fromResponse(apiResult.data)))
+        } else if (apiResult is BaseResponse.Error) {
+            emit(BaseResponse.Error(apiResult.error))
+        }
+    }
+
+
+    //Get total points
+    fun getUserTotalPoints(): Flow<BaseResponse<Int>> = flow {
+        val apiResult = callApiService.callGetTotalPoints()
+        if (apiResult is BaseResponse.Success) {
+            emit(BaseResponse.Success(data = apiResult.data.totalPoints ?: 0))
+        } else if (apiResult is BaseResponse.Error) {
+            emit(BaseResponse.Error(apiResult.error))
+        }
+    }
+
+
+    //Get last user game
+    fun getLastGame(): Flow<BaseResponse<LastGameModel>> = flow {
+        val apiResult = callApiService.callGetLastUserGame()
+        if (apiResult is BaseResponse.Success) {
+            emit(BaseResponse.Success(GetLastGameMapper().fromResponse(apiResult.data)))
         } else if (apiResult is BaseResponse.Error) {
             emit(BaseResponse.Error(apiResult.error))
         }

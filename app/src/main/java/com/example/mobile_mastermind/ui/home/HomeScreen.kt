@@ -1,7 +1,6 @@
 package com.example.mobile_mastermind.ui.home
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -42,9 +40,12 @@ import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.ui.components.BottomNav
+import com.example.mobile_mastermind.ui.components.EmptyList
 import com.example.mobile_mastermind.ui.components.ProgressCircle
 import com.example.mobile_mastermind.ui.extension.TAG
+import com.example.mobile_mastermind.ui.extension.toComposeColor
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -96,18 +97,23 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
             points = uiState.points,
             lastGame = uiState.lastGame
         )
-        CategoriesSection(
-            categories = uiState.categories, marginBot, onCategoryClick = { categoryId ->
-                navController.currentBackStackEntry?.savedStateHandle?.set("category", categoryId)
-                navController.navigate(Game.route)
-            }
-        )
+        if (uiState.categories.isNotEmpty()) {
+            CategoriesSection(
+                categories = uiState.categories, marginBot, onCategoryClick = { categoryId ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "category", categoryId
+                    )
+                    navController.navigate(Game.route)
+                })
+        } else {
+            EmptyList(text = stringResource(R.string.home_empty_categories))
+        }
     }
 }
 
 @Composable
 private fun UserInfoSection(
-    userName: String, userImg: String, points: Int, lastGame: LastGame
+    userName: String, userImg: String, points: Int, lastGame: LastGameModel
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(31.dp)
@@ -147,15 +153,17 @@ private fun UserInfoSection(
                 style = MaterialTheme.typography.bodyMedium
             )
         }
-        LastGameCard(lastGame = lastGame)
+        if (lastGame.img != "") {
+            LastGameCard(lastGame = lastGame)
+        }
     }
 }
 
 @Composable
-private fun LastGameCard(lastGame: LastGame) {
+private fun LastGameCard(lastGame: LastGameModel) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = GreenLight
+            containerColor = lastGame.color.toComposeColor()
         )
     ) {
         Row(
@@ -165,12 +173,16 @@ private fun LastGameCard(lastGame: LastGame) {
             Box(
                 modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(lastGame.iconRes),
-                    contentDescription = stringResource(R.string.user_image_content_description),
-                    modifier = Modifier.size(80.dp),
-                    contentScale = ContentScale.Crop
-                )
+                Box(
+                    modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = lastGame.img,
+                        contentDescription = stringResource(R.string.home_category_image_content_description),
+                        modifier = Modifier.size(80.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
