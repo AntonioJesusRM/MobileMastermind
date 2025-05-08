@@ -1,10 +1,14 @@
 package com.example.mobile_mastermind.data.repository.remote.backend
 
+import com.example.mobile_mastermind.data.repository.remote.request.FinishGameRequest
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
+import com.example.mobile_mastermind.data.repository.remote.request.NewGameRequest
 import com.example.mobile_mastermind.data.repository.remote.response.SuccessWrapper
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetCategoriesResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetLastUserGameResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetUserTotalPointsResponse
+import com.example.mobile_mastermind.data.repository.remote.response.game.PostFinishGameResponse
+import com.example.mobile_mastermind.data.repository.remote.response.game.PostNewGameResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.GetProfileResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.PostLoginResponse
 import okhttp3.MultipartBody
@@ -52,6 +56,18 @@ interface ApiService {
     @GET("api/games/getLastUserGame")
     suspend fun getLastUserGame(
     ): Response<SuccessWrapper<GetLastUserGameResponse>>
+
+    //New Game
+    @POST("api/games/addGame")
+    suspend fun postNewGame(
+        @Body newGameRequest: NewGameRequest
+    ): Response<SuccessWrapper<PostNewGameResponse>>
+
+    //Result game
+    @POST("api/games/updateGameStats")
+    suspend fun postResultGame(
+        @Body finishGameRequest: FinishGameRequest
+    ): Response<SuccessWrapper<PostFinishGameResponse>>
 
     //Get profile
     @GET("api/users/profile")

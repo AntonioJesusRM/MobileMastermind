@@ -169,6 +169,7 @@ private fun LastGameCard(lastGame: LastGameModel) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(
                 modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
@@ -205,7 +206,7 @@ private fun LastGameCard(lastGame: LastGameModel) {
 
 @Composable
 private fun CategoriesSection(
-    categories: List<CategoryModel>, marginBot: Dp, onCategoryClick: (String) -> Unit
+    categories: List<CategoryModel>, marginBot: Dp, onCategoryClick: (CategoryModel) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -220,7 +221,7 @@ private fun CategoriesSection(
         ) {
             items(items = categories) { category ->
                 CategoryCard(
-                    category = category, onClick = { onCategoryClick(category.id) })
+                    category = category, onClick = { onCategoryClick(category) })
             }
         }
     }

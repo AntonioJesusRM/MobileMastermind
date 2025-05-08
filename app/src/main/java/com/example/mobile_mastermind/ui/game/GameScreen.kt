@@ -2,7 +2,6 @@ package com.example.mobile_mastermind.ui.game
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,11 +43,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Home
 import com.example.mobile_mastermind.Review
 import com.example.mobile_mastermind.domain.model.game.CategoryModel
@@ -110,6 +110,7 @@ private fun GameBody(
         return
     }
 
+    var timeLeft by remember { mutableIntStateOf(0) }
     var isAnswerSelected by remember { mutableStateOf(false) }
     var timeOut by remember { mutableStateOf(false) }
     var selectedAnswerId by remember { mutableStateOf<Int?>(null) }
@@ -140,28 +141,28 @@ private fun GameBody(
                     gameViewModel.timeOut(currentQuestion)
                     timeOut = true
                 },
-                isAnswerSelected = isAnswerSelected
+                isAnswerSelected = isAnswerSelected,
+                onTimeChanged = { updatedTime -> timeLeft = updatedTime }
             )
 
             ProgressGame(uiState.infoGame, uiState.questions.size)
 
             QuestionCard(
-                question = currentQuestion.text,
-                imageRes = currentQuestion.questionImg
+                question = currentQuestion.text, imageRes = currentQuestion.questionImg
             )
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(21.dp)
             ) {
-                items(items = currentQuestion.options) { option ->
+                itemsIndexed(items = currentQuestion.options) { index, option ->
                     AnswerButton(
-                        answer = option.text, isCorrect = gameViewModel.checkOption(
-                            isAnswerSelected, selectedAnswerId, option, currentQuestion
+                        answer = option, isCorrect = gameViewModel.checkOption(
+                            isAnswerSelected, selectedAnswerId, index, currentQuestion
                         ), onClick = {
                             if (!isAnswerSelected) {
-                                selectedAnswerId = option.id
+                                selectedAnswerId = index
                                 isAnswerSelected = true
-                                gameViewModel.selectAnswer(option.id)
+                                gameViewModel.selectAnswer(index, timeLeft)
                             }
                         })
                 }
@@ -215,10 +216,7 @@ private fun ProgressGame(
                             arcTo(Rect(0f, 0f, size.height, size.height), 90f, 180f, false)
                             lineTo(width - radius, 0f)
                             arcTo(
-                                Rect(width - size.height, 0f, width, size.height),
-                                270f,
-                                180f,
-                                false
+                                Rect(width - size.height, 0f, width, size.height), 270f, 180f, false
                             )
                             lineTo(radius, size.height)
                             close()
@@ -236,7 +234,8 @@ private fun TimerCard(
     currentQuestionIndex: Int,
     totalQuestions: Int,
     onTimeOut: () -> Unit = {},
-    isAnswerSelected: Boolean = false
+    isAnswerSelected: Boolean = false,
+    onTimeChanged: (Int) -> Unit = {}
 ) {
     val initialTime = 15
     val totalMillis = initialTime * 1000L
@@ -249,7 +248,7 @@ private fun TimerCard(
             elapsedTime = 0L
             progress.snapTo(1f)
 
-            val frameDuration = 16L // ~60 FPS
+            val frameDuration = 16L
 
             while (elapsedTime < totalMillis) {
                 val currentTime = System.currentTimeMillis()
@@ -274,7 +273,7 @@ private fun TimerCard(
     }
 
     val remainingTime = ceil(initialTime * progress.value).toInt().coerceAtLeast(0)
-
+    onTimeChanged(remainingTime)
     Card(
         modifier = modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
             containerColor = BackgroundLight,
@@ -394,7 +393,7 @@ private fun AnswerButton(
 
 @Composable
 private fun QuestionCard(
-    question: String, imageRes: Int? = null
+    question: String, imageRes: String
 ) {
     Card(
         modifier = Modifier
@@ -410,14 +409,16 @@ private fun QuestionCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            imageRes?.let {
-                Image(
-                    painter = painterResource(id = it),
-                    contentDescription = "Question Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(100.dp)
-                )
+            if (imageRes != "") {
+                Box(
+                    modifier = Modifier.size(100.dp), contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = imageRes,
+                        contentDescription = "Question Image",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
             }
             Text(
                 modifier = Modifier.fillMaxWidth(),

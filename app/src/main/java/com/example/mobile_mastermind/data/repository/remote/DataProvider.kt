@@ -2,11 +2,15 @@ package com.example.mobile_mastermind.data.repository.remote
 
 import com.example.mobile_mastermind.data.repository.preferences.PreferencesDataSource
 import com.example.mobile_mastermind.data.repository.remote.backend.RemoteDataSource
+import com.example.mobile_mastermind.data.repository.remote.request.FinishGameRequest
 import com.example.mobile_mastermind.data.repository.remote.request.LoginUserRequest
+import com.example.mobile_mastermind.data.repository.remote.request.NewGameRequest
 import com.example.mobile_mastermind.data.repository.remote.request.RegisterRequest
 import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
 import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.model.game.FinishGameModel
 import com.example.mobile_mastermind.domain.model.game.LastGameModel
+import com.example.mobile_mastermind.domain.model.game.NewGameModel
 import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -46,6 +50,16 @@ class DataProvider @Inject constructor(
     //Get last user game
     override fun getLastGame(): Flow<BaseResponse<LastGameModel>> {
         return remoteDataSource.getLastGame()
+    }
+
+    //Post new game
+    override fun postNewGame(newGameRequest: NewGameRequest): Flow<BaseResponse<NewGameModel>> {
+        return remoteDataSource.postNewGame(newGameRequest)
+    }
+
+    //Post result game
+    override fun postFinishGame(finishGameRequest: FinishGameRequest): Flow<BaseResponse<FinishGameModel>> {
+        return remoteDataSource.postFinishGame(finishGameRequest)
     }
 
     //Get Profile

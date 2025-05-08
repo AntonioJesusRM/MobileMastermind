@@ -28,6 +28,6 @@ fun EmptyList(
 @Composable
 fun EmptyListPreview() {
     EmptyList(
-        text = "La lista esta vacia"
+        text = "Empty list"
     )
 }

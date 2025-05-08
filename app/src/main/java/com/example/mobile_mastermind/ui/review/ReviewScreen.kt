@@ -28,10 +28,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -61,16 +63,13 @@ fun ReviewScreen(
     val uiState = reviewViewModel.uiState.value
 
     Scaffold(
-        containerColor = Color.Transparent,
-        modifier = Modifier, bottomBar = {
+        containerColor = Color.Transparent, modifier = Modifier, bottomBar = {
             PrimaryButton(
-                text = stringResource(R.string.review_button_done),
-                onClick = {
+                text = stringResource(R.string.review_button_done), onClick = {
                     navController.navigate(Home.route) {
                         popUpTo(Review.route) { inclusive = true }
                     }
-                },
-                modifier = Modifier
+                }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             )
@@ -109,10 +108,18 @@ fun ReviewScreen(
 
 @Composable
 private fun AnswersCard(questions: List<QuestionResults>) {
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+
+    val maxHeight = remember(windowInfo, density) {
+        with(density) {
+            (windowInfo.containerSize.height * 0.6f).toDp()
+        }
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(max = LocalConfiguration.current.screenHeightDp.dp * 0.6f),
+            .heightIn(max = maxHeight),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -212,7 +219,7 @@ fun ResultCard(
 
             Text(
                 text = stringResource(R.string.result_score, score),
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.bodyLarge
             )
             Spacer(modifier = Modifier.height(24.dp))
 
