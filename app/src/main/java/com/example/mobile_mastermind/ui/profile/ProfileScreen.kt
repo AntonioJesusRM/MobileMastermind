@@ -50,8 +50,8 @@ import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.domain.model.users.CategoryStatsModel
 import com.example.mobile_mastermind.ui.components.BottomNav
-import com.example.mobile_mastermind.ui.components.EmptyList
 import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.components.ShowEmptyList
 import com.example.mobile_mastermind.ui.extension.PutImage
 import com.example.mobile_mastermind.ui.extension.toComposeColor
 import com.example.mobile_mastermind.ui.home.ErrorScreen
@@ -138,7 +138,7 @@ private fun StatsCard(
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         if (stats.isEmpty()) {
-            EmptyList(modifier = modifier, text = stringResource(R.string.profile_empty_stats))
+            ShowEmptyList(modifier = modifier, text = stringResource(R.string.profile_empty_stats))
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(13.dp),

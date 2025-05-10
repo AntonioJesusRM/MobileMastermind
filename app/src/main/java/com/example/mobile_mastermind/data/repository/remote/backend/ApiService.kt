@@ -9,6 +9,7 @@ import com.example.mobile_mastermind.data.repository.remote.response.game.GetLas
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetUserTotalPointsResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.PostFinishGameResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.PostNewGameResponse
+import com.example.mobile_mastermind.data.repository.remote.response.ranking.GetRankingResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.GetProfileResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.PostLoginResponse
 import okhttp3.MultipartBody
@@ -68,6 +69,11 @@ interface ApiService {
     suspend fun postResultGame(
         @Body finishGameRequest: FinishGameRequest
     ): Response<SuccessWrapper<PostFinishGameResponse>>
+
+    //Get Ranking
+    @GET("api/ranking/globalUserRanking")
+    suspend fun getRanking(
+    ): Response<SuccessWrapper<List<GetRankingResponse>>>
 
     //Get profile
     @GET("api/users/profile")

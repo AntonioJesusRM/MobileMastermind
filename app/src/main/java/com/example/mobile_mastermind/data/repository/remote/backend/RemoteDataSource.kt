@@ -4,6 +4,7 @@ import com.example.mobile_mastermind.data.mapper.game.GetCategoriesMapper
 import com.example.mobile_mastermind.data.mapper.game.GetLastGameMapper
 import com.example.mobile_mastermind.data.mapper.game.PostFinishGameMapper
 import com.example.mobile_mastermind.data.mapper.game.PostNewGameMapper
+import com.example.mobile_mastermind.data.mapper.ranking.GetRankingMapper
 import com.example.mobile_mastermind.data.mapper.users.GetProfileMapper
 import com.example.mobile_mastermind.data.repository.preferences.PreferencesDataSource
 import com.example.mobile_mastermind.data.repository.remote.request.FinishGameRequest
@@ -16,6 +17,7 @@ import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import com.example.mobile_mastermind.domain.model.game.FinishGameModel
 import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.domain.model.game.NewGameModel
+import com.example.mobile_mastermind.domain.model.ranking.GetRankingModel
 import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -139,6 +141,17 @@ class RemoteDataSource @Inject constructor(
                 emit(BaseResponse.Error(apiResult.error))
             }
         }
+
+    //Get Ranking
+    fun getRanking(): Flow<BaseResponse<List<GetRankingModel>>> = flow {
+        val apiResult = callApiService.callGetRanking()
+        if (apiResult is BaseResponse.Success) {
+            emit(BaseResponse.Success(GetRankingMapper().fromResponse(apiResult.data)))
+        } else if (apiResult is BaseResponse.Error) {
+            emit(BaseResponse.Error(apiResult.error))
+        }
+    }
+
 
     //Get profile
     fun getProfile(): Flow<BaseResponse<GetProfileModel>> = flow {

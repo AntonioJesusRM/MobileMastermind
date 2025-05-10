@@ -39,10 +39,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.domain.model.ranking.GetRankingModel
 import com.example.mobile_mastermind.ui.components.BottomNav
 import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.components.ShowEmptyList
 import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
@@ -68,9 +71,16 @@ fun RankingScreen(
             Scaffold(
                 containerColor = Color.Transparent,
                 bottomBar = { BottomNav(navController) }) { padding ->
-                RankingBody(
-                    uiState = uiState, marginBot = padding.calculateBottomPadding()
-                )
+                if (uiState.globalRankings.isEmpty()) {
+                    ShowEmptyList(
+                        modifier = Modifier.padding(padding),
+                        text = stringResource(R.string.ranking_empty)
+                    )
+                } else {
+                    RankingBody(
+                        uiState = uiState, marginBot = padding.calculateBottomPadding()
+                    )
+                }
             }
         }
     }
@@ -113,10 +123,10 @@ fun RankingBody(marginBot: Dp, uiState: RankingUiState) {
         ) {
             items(items = uiState.globalRankings.drop(3)) { item ->
                 RankingCard(
-                    imageRes = item.userImg,
+                    imageRes = item.user.image,
                     position = uiState.globalRankings.indexOf(item) + 1,
-                    playerName = item.name,
-                    score = item.points,
+                    playerName = item.user.name,
+                    score = item.totalScore,
                     yourPosition = uiState.myPosition == uiState.globalRankings.indexOf(item) + 1
                 )
             }
@@ -126,7 +136,7 @@ fun RankingBody(marginBot: Dp, uiState: RankingUiState) {
 
 @Composable
 fun TopRankingCard(
-    topRankings: List<RankingItem>, yourPosition: Int
+    topRankings: List<GetRankingModel>, yourPosition: Int
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -134,32 +144,28 @@ fun TopRankingCard(
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Column(
-            modifier = Modifier.padding(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.Bottom
             ) {
-                TopRankingItem(
-                    imgUser = topRankings[1].userImg,
-                    position = 2,
-                    name = if (yourPosition == 2) stringResource(R.string.ranking_your_position) else topRankings[1].name,
-                    points = topRankings[1].points
-                )
-                TopRankingItem(
-                    imgUser = topRankings[0].userImg,
-                    position = 1,
-                    name = if (yourPosition == 1) stringResource(R.string.ranking_your_position) else topRankings[0].name,
-                    points = topRankings[0].points
-                )
-                TopRankingItem(
-                    imgUser = topRankings[2].userImg,
-                    position = 3,
-                    name = if (yourPosition == 3) stringResource(R.string.ranking_your_position) else topRankings[2].name,
-                    points = topRankings[2].points
-                )
+                listOf(1, 0, 2).forEach { index ->
+                    if (index < topRankings.size) {
+                        val user = topRankings[index].user
+                        val position = index + 1
+                        TopRankingItem(
+                            imgUser = user.image,
+                            position = position,
+                            name = if (yourPosition == position) stringResource(R.string.ranking_your_position)
+                            else user.name,
+                            points = topRankings[index].totalScore
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.width(100.dp))
+                    }
+                }
             }
         }
     }
@@ -167,7 +173,7 @@ fun TopRankingCard(
 
 @Composable
 private fun TopRankingItem(
-    imgUser: Int, position: Int, name: String, points: Int, modifier: Modifier = Modifier
+    imgUser: String, position: Int, name: String, points: Int, modifier: Modifier = Modifier
 ) {
     val size = if (position == 1) 150.dp else 100.dp
     val sizeMedalContainer = if (position == 1) 45.dp else 35.dp
@@ -203,7 +209,7 @@ private fun TopRankingItem(
 }
 
 @Composable
-private fun ProfileImage(imgUser: Int, size: Dp, backgroundColor: Color) {
+private fun ProfileImage(imgUser: String, size: Dp, backgroundColor: Color) {
     Box(
         modifier = Modifier
             .size(size)
@@ -211,11 +217,13 @@ private fun ProfileImage(imgUser: Int, size: Dp, backgroundColor: Color) {
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(imgUser),
-            contentDescription = stringResource(R.string.ranking_avatar_content_description),
-            modifier = Modifier.size(size),
-            contentScale = ContentScale.Crop
+        AsyncImage(
+            model = imgUser,
+            contentDescription = stringResource(R.string.ranking_profile_image_description),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(size)
+                .clip(CircleShape)
         )
     }
 }
@@ -268,7 +276,7 @@ private fun getBackgroundColor(position: Int): Color {
 
 @Composable
 private fun RankingCard(
-    imageRes: Int, position: Int, playerName: String, score: Int, yourPosition: Boolean
+    imageRes: String, position: Int, playerName: String, score: Int, yourPosition: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -296,11 +304,7 @@ private fun RankingCard(
                     modifier = Modifier.width(30.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    painter = painterResource(id = imageRes),
-                    contentDescription = stringResource(R.string.ranking_profile_image_description),
-                    modifier = Modifier.size(40.dp)
-                )
+                ProfileImage(imgUser = imageRes, size = 40.dp, backgroundColor = White)
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = if (yourPosition) stringResource(R.string.ranking_your_position) else playerName,

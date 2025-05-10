@@ -42,8 +42,8 @@ import com.example.mobile_mastermind.R
 import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.ui.components.BottomNav
-import com.example.mobile_mastermind.ui.components.EmptyList
 import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.components.ShowEmptyList
 import com.example.mobile_mastermind.ui.extension.TAG
 import com.example.mobile_mastermind.ui.extension.toComposeColor
 import com.example.mobile_mastermind.ui.theme.Black
@@ -106,7 +106,7 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
                     navController.navigate(Game.route)
                 })
         } else {
-            EmptyList(text = stringResource(R.string.home_empty_categories))
+            ShowEmptyList(text = stringResource(R.string.home_empty_categories))
         }
     }
 }

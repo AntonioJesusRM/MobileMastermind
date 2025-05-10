@@ -11,6 +11,7 @@ import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import com.example.mobile_mastermind.domain.model.game.FinishGameModel
 import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.domain.model.game.NewGameModel
+import com.example.mobile_mastermind.domain.model.ranking.GetRankingModel
 import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -65,6 +66,11 @@ class DataProvider @Inject constructor(
     //Get Profile
     override fun getProfile(): Flow<BaseResponse<GetProfileModel>> {
         return remoteDataSource.getProfile()
+    }
+
+    //Get Ranking
+    override fun getRanking(): Flow<BaseResponse<List<GetRankingModel>>> {
+        return remoteDataSource.getRanking()
     }
 
     //Preferences

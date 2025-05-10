@@ -10,6 +10,7 @@ import com.example.mobile_mastermind.data.repository.remote.response.game.GetLas
 import com.example.mobile_mastermind.data.repository.remote.response.game.GetUserTotalPointsResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.PostFinishGameResponse
 import com.example.mobile_mastermind.data.repository.remote.response.game.PostNewGameResponse
+import com.example.mobile_mastermind.data.repository.remote.response.ranking.GetRankingResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.GetProfileResponse
 import com.example.mobile_mastermind.data.repository.remote.response.users.PostLoginResponse
 import javax.inject.Inject
@@ -62,6 +63,11 @@ class CallApiService @Inject constructor(
     //Post result game
     suspend fun callPostFinishGame(finishGameRequest: FinishGameRequest): BaseResponse<PostFinishGameResponse> {
         return apiCall { apiService.postResultGame(finishGameRequest) }
+    }
+
+    //Get Ranking
+    suspend fun callGetRanking(): BaseResponse<List<GetRankingResponse>> {
+        return apiCall { apiService.getRanking() }
     }
 
     //Get profile

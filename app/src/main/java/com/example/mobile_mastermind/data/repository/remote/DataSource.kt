@@ -9,6 +9,7 @@ import com.example.mobile_mastermind.domain.model.game.CategoryModel
 import com.example.mobile_mastermind.domain.model.game.FinishGameModel
 import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.domain.model.game.NewGameModel
+import com.example.mobile_mastermind.domain.model.ranking.GetRankingModel
 import com.example.mobile_mastermind.domain.model.users.GetProfileModel
 import kotlinx.coroutines.flow.Flow
 
@@ -40,6 +41,9 @@ interface DataSource {
 
     //Get Profile
     fun getProfile(): Flow<BaseResponse<GetProfileModel>>
+
+    //Get Ranking
+    fun getRanking(): Flow<BaseResponse<List<GetRankingModel>>>
 
     //Preferences
     fun clearPreferences()
