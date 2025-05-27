@@ -38,6 +38,7 @@ class ProfileViewModel @Inject constructor(
             getProfileUseCase().collect { baseResponse ->
                 when (baseResponse) {
                     is BaseResponse.Success -> {
+                        Log.d(TAG, "%> datos: ${baseResponse.data}")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             profileImg = dataUserSession.userImage,

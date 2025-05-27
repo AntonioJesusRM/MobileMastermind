@@ -157,42 +157,42 @@ private fun StatCategoryItem(category: CategoryStatsModel) {
     val stats = listOf(
         StatItem(
             statImg = null,
-            title = category.category.name,
-            statColor = category.category.color.toComposeColor()
+            title = category.categoryName,
+            statColor = category.categoryColor.toComposeColor()
         ), StatItem(
             statImg = R.drawable.stat_check_item,
             title = stringResource(R.string.profile_best_score_title),
             statBackground = R.drawable.stat_best_background,
             value = category.bestScore,
             unit = stringResource(R.string.profile_stat_unit),
-            statColor = category.category.color.toComposeColor()
+            statColor = category.categoryColor.toComposeColor()
         ), StatItem(
             statImg = R.drawable.stat_best_question_item,
             title = stringResource(R.string.profile_stat_best_question),
             statBackground = R.drawable.stat_best_background,
             value = category.bestQuestion,
             unit = stringResource(R.string.profile_stat_unit),
-            statColor = category.category.color.toComposeColor()
+            statColor = category.categoryColor.toComposeColor()
         ), StatItem(
             statBackground = R.drawable.stat_total_games_item,
             title = stringResource(R.string.profile_stat_total_games),
             value = category.totalGames,
             unit = "",
-            statColor = category.category.color.toComposeColor()
+            statColor = category.categoryColor.toComposeColor()
         ), StatItem(
             statImg = R.drawable.stat_check_item,
             title = stringResource(R.string.profile_stat_correct_answers),
             statBackground = R.drawable.stat_answer_background,
             value = category.correctAnswers,
             unit = "",
-            statColor = category.category.color.toComposeColor()
+            statColor = category.categoryColor.toComposeColor()
         ), StatItem(
             statImg = R.drawable.stat_incorrect_answer_item,
             title = stringResource(R.string.profile_stat_incorrect_answers),
             statBackground = R.drawable.stat_answer_background,
             value = category.incorrectAnswers,
             unit = "",
-            statColor = category.category.color.toComposeColor()
+            statColor = category.categoryColor.toComposeColor()
         )
     )
     LazyRow(horizontalArrangement = Arrangement.spacedBy(13.dp)) {

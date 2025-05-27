@@ -28,9 +28,12 @@ class ReviewViewModel @Inject constructor(
             Log.d(TAG, "%> Resume game: $resumeGame")
             val resultGameRequest = resumeGame.questionsResult.map { question ->
                 ResultsGameRequest(
-                    questionId = question.id, time = question.time, response = question.response
+                    questionId = question.id,
+                    time = question.time,
+                    response = question.responseNumber
                 )
             }
+            Log.d(TAG, "%> Enviado al servidor: $resultGameRequest")
             val finishGameRequest = FinishGameRequest(
                 gameId = resumeGame.gameId, results = resultGameRequest
             )
