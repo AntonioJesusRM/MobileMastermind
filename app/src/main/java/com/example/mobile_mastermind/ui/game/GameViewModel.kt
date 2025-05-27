@@ -1,139 +1,91 @@
 package com.example.mobile_mastermind.ui.game
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_mastermind.R
-import com.example.mobile_mastermind.ui.home.Category
+import com.example.mobile_mastermind.data.mapper.game.QuestionsUiMapper
+import com.example.mobile_mastermind.data.repository.remote.request.NewGameRequest
+import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.usecase.remote.PostNewGameUseCase
+import com.example.mobile_mastermind.ui.extension.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GameViewModel @Inject constructor() : ViewModel() {
+class GameViewModel @Inject constructor(
+    private val postNewGameUseCase: PostNewGameUseCase,
+) : ViewModel() {
     private val _uiState = mutableStateOf(GameUiState())
     val uiState: State<GameUiState> = _uiState
 
-    fun loadQuestions(category: Category) {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+    fun loadQuestions(category: CategoryModel) {
         viewModelScope.launch {
-            try {
-                delay(1000)
-                require(category.id == 1) { "Solo la categoría 1 está disponible en este momento" }
-                _uiState.value = GameUiState(
-                    questions = listOf(
-                        Question(
-                            id = 1,
-                            text = "¿Cuál es el resultado?",
-                            correctOptionId = 1,
-                            options = listOf(
-                                Option(id = 1, text = "[4]", isCorrect = true),
-                                Option(id = 2, text = "[2, 4]", isCorrect = false),
-                                Option(id = 3, text = "[8]", isCorrect = false),
-                                Option(id = 4, text = "[]", isCorrect = false)
-                            ),
-                            questionImg = R.drawable.ic_launcher_foreground
-                        ),
-                        Question(
-                            id = 2,
-                            correctOptionId = 1,
-                            text = "¿Cuál es la forma correcta de declarar una variable inmutable en Kotlin?",
-                            options = listOf(
-                                Option(id = 1, text = "val nombre = \"Kotlin\"", isCorrect = true),
-                                Option(id = 2, text = "let nombre = \"Kotlin\"", isCorrect = false),
-                                Option(
-                                    id = 3,
-                                    text = "var nombre: String = \"Kotlin\"",
-                                    isCorrect = false
-                                ),
-                                Option(
-                                    id = 4,
-                                    text = "const var nombre = \"Kotlin\"",
-                                    isCorrect = false
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            val newGameRequest = NewGameRequest(category.id)
+            postNewGameUseCase(newGameRequest).collect { baseResponse ->
+                when (baseResponse) {
+                    is BaseResponse.Success -> {
+                        Log.d(TAG, "%> ")
+                        if (baseResponse.data.questions.isEmpty()) {
+                            _uiState.value = GameUiState(
+                                isLoading = false, errorMessage = "No hay preguntas señoria"
+                            )
+                        } else {
+                            _uiState.value = GameUiState(
+                                isLoading = false,
+                                questions = QuestionsUiMapper().fromResponse(baseResponse.data.questions),
+                                currentQuestionIndex = 0,
+                                resumeGame = ResumeGame(
+                                    gameId = baseResponse.data.gameId,
+                                    name = category.name,
+                                    answerCorrect = 0,
+                                    answerIncorrect = 0,
+                                    questionsResult = emptyList()
                                 )
                             )
-                        ),
-                        Question(
-                            id = 3,
-                            correctOptionId = 1,
-                            text = "Kotlin es totalmente compatible con el código Java y puede usarse junto a él en el mismo proyecto.",
-                            options = listOf(
-                                Option(id = 1, text = "Verdadero", isCorrect = true),
-                                Option(id = 2, text = "Falso", isCorrect = false)
-                            )
-                        ),
-                        Question(
-                            id = 4,
-                            text = "¿Qué hace el modificador 'suspend' en Kotlin?",
-                            correctOptionId = 1,
-                            options = listOf(
-                                Option(
-                                    id = 1,
-                                    text = "Indica que la función puede ser pausada y reanudada",
-                                    isCorrect = true
-                                ),
-                                Option(
-                                    id = 2,
-                                    text = "Detiene la ejecución del programa",
-                                    isCorrect = false
-                                ),
-                                Option(
-                                    id = 3,
-                                    text = "Es equivalente a 'static' en Java",
-                                    isCorrect = false
-                                ),
-                                Option(
-                                    id = 4,
-                                    text = "Ninguna de las anteriores",
-                                    isCorrect = false
-                                )
-                            )
+                        }
+                    }
+
+                    is BaseResponse.Error -> {
+                        Log.d(TAG, "%> Error: ${baseResponse.error.message}")
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false
                         )
-                    ),
-                    currentQuestionIndex = 0,
-                    resumeGame = ResumeGame(
-                        name = category.name,
-                        score = 0,
-                        answerCorrect = 0,
-                        answerIncorrect = 0,
-                        questionsResult = emptyList()
-                    )
-                )
-            } catch (e: Exception) {
-                _uiState.value =
-                    _uiState.value.copy(errorMessage = e.localizedMessage ?: "Error desconocido")
-            } finally {
-                _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
             }
         }
     }
 
-    fun selectAnswer(optionId: Int) {
+    private fun addQuestionResult(result: QuestionResults, isCorrect: Boolean) {
+        val resume = _uiState.value.resumeGame
+        _uiState.value = _uiState.value.copy(
+            resumeGame = resume.copy(
+                answerCorrect = resume.answerCorrect + if (isCorrect) 1 else 0,
+                answerIncorrect = resume.answerIncorrect + if (!isCorrect) 1 else 0,
+                questionsResult = resume.questionsResult + result
+            ), infoGame = _uiState.value.infoGame + isCorrect
+        )
+    }
+
+    fun selectAnswer(index: Int, time: Int) {
         val currentQuestion = _uiState.value.questions[_uiState.value.currentQuestionIndex]
-        val isCorrect = currentQuestion.options.any { it.id == optionId && it.isCorrect }
+        val isCorrect = currentQuestion.correctOptionIndex == index
 
         val questionResults = QuestionResults(
-            id = currentQuestion.id,
+            id = currentQuestion.questionId,
             question = currentQuestion.text,
-            response = currentQuestion.options.firstOrNull { it.id == optionId }?.text
-                ?: "Respuesta desconocida",
-            isCorrect = isCorrect
+            response = currentQuestion.options[index],
+            isCorrect = isCorrect,
+            responseNumber = index.toString(),
+            time = time
         )
-        _uiState.value = _uiState.value.copy(
-            selectedAnswer = optionId,
-            resumeGame = if (isCorrect) _uiState.value.resumeGame.copy(
-                score = _uiState.value.resumeGame.score + 20,
-                answerCorrect = _uiState.value.resumeGame.answerCorrect + 1,
-                questionsResult = _uiState.value.resumeGame.questionsResult + questionResults
-            ) else _uiState.value.resumeGame.copy(
-                score = _uiState.value.resumeGame.score,
-                answerIncorrect = _uiState.value.resumeGame.answerIncorrect + 1,
-                questionsResult = _uiState.value.resumeGame.questionsResult + questionResults
-            ),
-            infoGame = _uiState.value.infoGame + isCorrect
-        )
+        _uiState.value = _uiState.value.copy(selectedAnswer = index)
+        addQuestionResult(questionResults, isCorrect)
     }
 
     fun loadNextQuestion() {
@@ -143,35 +95,29 @@ class GameViewModel @Inject constructor() : ViewModel() {
     }
 
     fun timeOut(currentQuestion: Question) {
-        val updatedQuestions = _uiState.value.questions.map { q ->
-            if (q.id == currentQuestion.id) q.copy(showResult = true) else q
-        }
+        val indexQuestion = _uiState.value.currentQuestionIndex
+        val updatedQuestions = _uiState.value.questions.toMutableList()
+
+        updatedQuestions[indexQuestion] = updatedQuestions[indexQuestion].copy(showResult = true)
 
         val questionResults = QuestionResults(
-            id = currentQuestion.id,
+            id = currentQuestion.questionId,
             question = currentQuestion.text,
             response = "",
-            isCorrect = false
+            isCorrect = false,
+            responseNumber = "",
+            time = 0
         )
 
-        _uiState.value = _uiState.value.copy(
-            infoGame = _uiState.value.infoGame + false,
-            questions = updatedQuestions,
-            resumeGame = _uiState.value.resumeGame.copy(
-                answerIncorrect = _uiState.value.resumeGame.answerIncorrect + 1,
-                questionsResult = _uiState.value.resumeGame.questionsResult + questionResults
-            )
-        )
+        _uiState.value = _uiState.value.copy(questions = updatedQuestions)
+        addQuestionResult(questionResults, false)
     }
 
     fun checkOption(
-        isAnswerSelected: Boolean?,
-        selectedAnswerId: Int?,
-        option: Option,
-        question: Question
+        isAnswerSelected: Boolean?, selectedAnswerIndex: Int?, optionIndex: Int, question: Question
     ) = when {
-        isAnswerSelected == true && (option.id == selectedAnswerId || option.isCorrect) -> option.isCorrect
-        isAnswerSelected == false && question.showResult && option.id == question.correctOptionId -> true
+        isAnswerSelected == true && (optionIndex == selectedAnswerIndex) -> optionIndex == question.correctOptionIndex
+        isAnswerSelected == false && question.showResult && optionIndex == question.correctOptionIndex -> true
         else -> null
     }
 }

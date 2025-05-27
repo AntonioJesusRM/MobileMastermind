@@ -19,12 +19,19 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +45,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.domain.model.users.CategoryStatsModel
 import com.example.mobile_mastermind.ui.components.BottomNav
 import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.components.ShowEmptyList
 import com.example.mobile_mastermind.ui.extension.PutImage
+import com.example.mobile_mastermind.ui.extension.toComposeColor
 import com.example.mobile_mastermind.ui.home.ErrorScreen
 import com.example.mobile_mastermind.ui.theme.BackgroundLight
 import com.example.mobile_mastermind.ui.theme.GoldLight
@@ -56,6 +67,16 @@ fun ProfileScreen(
     navController: NavController, profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState = profileViewModel.uiState.value
+    val logoutResult by profileViewModel.logoutResult.collectAsState()
+
+    LaunchedEffect(logoutResult) {
+        if (logoutResult is LogoutResult.Success) {
+            profileViewModel.clearState()
+            navController.navigate(Login.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
 
     when {
         uiState.isLoading -> ProgressCircle()
@@ -73,22 +94,27 @@ fun ProfileScreen(
                 containerColor = Color.Transparent,
                 bottomBar = { BottomNav(navController) }) { padding ->
                 ProfileBody(
-                    uiState = uiState, marginBot = padding.calculateBottomPadding()
-                )
+                    uiState = uiState,
+                    marginBot = padding.calculateBottomPadding(),
+                    onLogoutClick = { profileViewModel.onLogoutClick() })
             }
         }
     }
 }
 
 @Composable
-private fun ProfileBody(uiState: ProfileUiState, marginBot: Dp) {
+private fun ProfileBody(
+    uiState: ProfileUiState, marginBot: Dp, onLogoutClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp, 25.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ProfileCard(modifier = Modifier, uiState.profileImg, uiState.name)
+        ProfileCard(
+            modifier = Modifier, uiState, onLogoutClick
+        )
         Spacer(modifier = Modifier.height(11.dp))
         DataCard(modifier = Modifier, uiState.points, uiState.bestScore, uiState.ranking)
         Spacer(modifier = Modifier.height(13.dp))
@@ -102,7 +128,9 @@ private fun ProfileBody(uiState: ProfileUiState, marginBot: Dp) {
 }
 
 @Composable
-private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>, marginBot: Dp) {
+private fun StatsCard(
+    modifier: Modifier = Modifier, stats: List<CategoryStatsModel>, marginBot: Dp
+) {
     Card(
         modifier = modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(containerColor = White),
@@ -110,14 +138,7 @@ private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>,
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         if (stats.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.profile_empty_stats),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+            ShowEmptyList(modifier = modifier, text = stringResource(R.string.profile_empty_stats))
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(13.dp),
@@ -132,47 +153,46 @@ private fun StatsCard(modifier: Modifier = Modifier, stats: List<CategoryStats>,
 }
 
 @Composable
-private fun StatCategoryItem(category: CategoryStats) {
+private fun StatCategoryItem(category: CategoryStatsModel) {
     val stats = listOf(
-        StatItem(statImg = null, title = category.title, statColor = category.colorCategory),
         StatItem(
+            statImg = null,
+            title = category.categoryName,
+            statColor = category.categoryColor.toComposeColor()
+        ), StatItem(
             statImg = R.drawable.stat_check_item,
             title = stringResource(R.string.profile_best_score_title),
             statBackground = R.drawable.stat_best_background,
             value = category.bestScore,
             unit = stringResource(R.string.profile_stat_unit),
-            statColor = category.colorCategory
-        ),
-        StatItem(
+            statColor = category.categoryColor.toComposeColor()
+        ), StatItem(
             statImg = R.drawable.stat_best_question_item,
             title = stringResource(R.string.profile_stat_best_question),
             statBackground = R.drawable.stat_best_background,
             value = category.bestQuestion,
             unit = stringResource(R.string.profile_stat_unit),
-            statColor = category.colorCategory
-        ),
-        StatItem(
+            statColor = category.categoryColor.toComposeColor()
+        ), StatItem(
             statBackground = R.drawable.stat_total_games_item,
             title = stringResource(R.string.profile_stat_total_games),
             value = category.totalGames,
             unit = "",
-            statColor = category.colorCategory
-        ),
-        StatItem(
+            statColor = category.categoryColor.toComposeColor()
+        ), StatItem(
             statImg = R.drawable.stat_check_item,
             title = stringResource(R.string.profile_stat_correct_answers),
             statBackground = R.drawable.stat_answer_background,
             value = category.correctAnswers,
             unit = "",
-            statColor = category.colorCategory
-        ),
-        StatItem(
+            statColor = category.categoryColor.toComposeColor()
+        ), StatItem(
             statImg = R.drawable.stat_incorrect_answer_item,
             title = stringResource(R.string.profile_stat_incorrect_answers),
             statBackground = R.drawable.stat_answer_background,
             value = category.incorrectAnswers,
             unit = "",
-            statColor = category.colorCategory
+            statColor = category.categoryColor.toComposeColor()
         )
     )
     LazyRow(horizontalArrangement = Arrangement.spacedBy(13.dp)) {
@@ -204,8 +224,7 @@ private fun StatCard(stat: StatItem) {
             if (stat.statBackground != null) {
                 PutImage(stat.statBackground, stat.statImg, stat.statColor, 50)
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
@@ -318,7 +337,7 @@ private fun ProfileStatItem(
 
 @Composable
 private fun ProfileCard(
-    modifier: Modifier = Modifier, userImg: Int?, userName: String
+    modifier: Modifier = Modifier, uiState: ProfileUiState, onLogoutClick: () -> Unit
 ) {
     Card(
         modifier = modifier
@@ -327,29 +346,39 @@ private fun ProfileCard(
             containerColor = BackgroundLight,
         )
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                contentAlignment = Alignment.Center, modifier = Modifier.align(Alignment.Center)
+            Spacer(modifier = Modifier.weight(1f))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(bottom = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    if (userImg != null) {
-                        Image(
-                            painter = painterResource(userImg),
-                            contentDescription = stringResource(R.string.profile_user_content_description),
-                            modifier = Modifier
-                                .size(150.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    Text(
-                        text = userName, style = MaterialTheme.typography.titleLarge
+                AsyncImage(
+                    model = uiState.profileImg,
+                    contentDescription = stringResource(R.string.profile_user_content_description),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                )
+                Text(
+                    text = uiState.username, style = MaterialTheme.typography.titleLarge
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(), contentAlignment = Alignment.TopEnd
+            ) {
+                IconButton(onClick = {
+                    onLogoutClick()
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = stringResource(R.string.profile_close_session),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }

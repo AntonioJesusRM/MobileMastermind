@@ -6,6 +6,7 @@
     <!-- General -->
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
+    <string name="user_image_content_description">Foto de perfil</string>
 
     <!-- String Bottom bar -->
     <string name="BottomBar_home_label">Inicio</string>
@@ -28,6 +29,7 @@
     <string name="register_button">Regístrate</string>
     <string name="register_login_prompt">¿Ya tienes una cuenta?</string>
     <string name="register_login_prompt_clickable">Inicia sesión</string>
+    <string name="register_select_profile_image">Selecciona una foto</string>
 
     <!-- Strings for Result -->
     <string name="result_category">Categoría:</string>
@@ -36,12 +38,12 @@
     <!-- String for Home -->
     <string name="home_greeting_msg">Hola!</string>
     <string name="home_user_points">%d puntos</string>
-    <string name="home_user_image_content_description">Imagen del usuario</string>
     <string name="home_last_game_text">Última partida:</string>
     <string name="home_title_categories">Categorias</string>
     <string name="home_icon_arrow_content_description">"Icono flecha horizontal para ir hacia delante"</string>
     <string name="home_category_image_content_description">Imagen de la categoria</string>
     <string name="home_category_number_question">%s - %d preguntas</string>
+    <string name="home_empty_categories">Aun no hay categorias</string>
 
     <!-- String for Review -->
     <string name="review_button_done">Hecho</string>
@@ -52,7 +54,7 @@
     <string name="review_incorrect_content_description">Icono de respuesta incorrecta</string>
 
     <!-- String for Ranking -->
-    <string name="ranking_profile_image_description">Profile image</string>
+    <string name="ranking_profile_image_description">Imagen de perfil</string>
     <string name="ranking_title">Clasificación</string>
     <string name="ranking_your_position">Tú</string>
     <string name="ranking_avatar_content_description">Avatar</string>
@@ -60,6 +62,7 @@
     <string name="ranking_crown_content_description">Corona</string>
     <string name="ranking_points">%d puntos</string>
     <string name="ranking_category_title">%s scores</string>
+    <string name="ranking_empty">Aún no hay una clasificación</string>
 
     <!-- String for Profile -->
     <string name="profile_icon_content_description">Ajustes</string>
@@ -75,5 +78,6 @@
     <string name="profile_stat_correct_answers">Preguntas correctas</string>
     <string name="profile_stat_incorrect_answers">Preguntas falladas</string>
     <string name="profile_empty_stats">Aun no tienes estadisticas</string>
+    <string name="profile_close_session">Cerrar sesión</string>
 
 </resources>

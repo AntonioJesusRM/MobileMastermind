@@ -4,45 +4,65 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.data.repository.remote.response.BaseResponse
+import com.example.mobile_mastermind.data.session.DataUserSession
+import com.example.mobile_mastermind.domain.model.game.LastGameModel
+import com.example.mobile_mastermind.domain.usecase.remote.GetCategoriesUseCase
+import com.example.mobile_mastermind.domain.usecase.remote.GetLastGameUseCase
+import com.example.mobile_mastermind.domain.usecase.remote.GetTotalPointsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val dataUserSession: DataUserSession,
+    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val getTotalPointsUseCase: GetTotalPointsUseCase,
+    private val getLastGameUseCase: GetLastGameUseCase
+) : ViewModel() {
     private val _uiState = mutableStateOf(HomeUiState())
     val uiState: State<HomeUiState> = _uiState
 
     init {
-        loadData()
+        loadHomeData()
     }
 
-    private fun loadData() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+    private fun loadHomeData() {
         viewModelScope.launch {
-            try {
-                delay(1000)
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            combine(
+                getCategoriesUseCase(), getTotalPointsUseCase(), getLastGameUseCase()
+            ) { categoriesResponse, pointsResponse, lastGameResponse ->
+
+                val categories = (categoriesResponse as? BaseResponse.Success)?.data ?: emptyList()
+                val points = (pointsResponse as? BaseResponse.Success)?.data ?: 0
+                val lastGame =
+                    (lastGameResponse as? BaseResponse.Success)?.data ?: LastGameModel("", "", 0)
+
+                val errorMessage = when {
+                    categoriesResponse is BaseResponse.Error -> categoriesResponse.error.message
+                    pointsResponse is BaseResponse.Error -> pointsResponse.error.message
+                    lastGameResponse is BaseResponse.Error -> lastGameResponse.error.message
+                    else -> null
+                }
+
+                Triple(categories, points, lastGame) to errorMessage
+
+            }.collect { (data, error) ->
+                val (categories, points, lastGame) = data
+
                 _uiState.value = HomeUiState(
-                    userName = "Andrés",
-                    points = 300,
-                    userImg = R.drawable.ic_launcher_foreground,
-                    lastGame = LastGame(1, R.drawable.ic_launcher_foreground, 200),
-                    categories = listOf(
-                        Category(1, "Kotlin", "Language", 10, R.drawable.ic_launcher_foreground),
-                        Category(2, "Swift", "Language", 10, R.drawable.ic_launcher_foreground),
-                        Category(
-                            3, "Android Studio", "IDE", 10, R.drawable.ic_launcher_foreground
-                        ),
-                        Category(4, "Xcode", "IDE", 10, R.drawable.ic_launcher_foreground),
-                    )
+                    isLoading = false,
+                    errorMessage = error,
+                    userName = dataUserSession.username,
+                    userImg = dataUserSession.userImage,
+                    points = points,
+                    categories = categories,
+                    lastGame = lastGame
                 )
-            } catch (e: Exception) {
-                _uiState.value =
-                    _uiState.value.copy(errorMessage = e.localizedMessage ?: "Error desconocido")
-            } finally {
-                _uiState.value = _uiState.value.copy(isLoading = false)
             }
         }
     }

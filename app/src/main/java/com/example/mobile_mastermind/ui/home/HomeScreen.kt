@@ -1,6 +1,6 @@
 package com.example.mobile_mastermind.ui.home
 
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,17 +30,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mobile_mastermind.Game
 import com.example.mobile_mastermind.Login
 import com.example.mobile_mastermind.R
+import com.example.mobile_mastermind.domain.model.game.CategoryModel
+import com.example.mobile_mastermind.domain.model.game.LastGameModel
 import com.example.mobile_mastermind.ui.components.BottomNav
 import com.example.mobile_mastermind.ui.components.ProgressCircle
+import com.example.mobile_mastermind.ui.components.ShowEmptyList
+import com.example.mobile_mastermind.ui.extension.TAG
+import com.example.mobile_mastermind.ui.extension.toComposeColor
 import com.example.mobile_mastermind.ui.theme.Black
 import com.example.mobile_mastermind.ui.theme.GreenLight
 import com.example.mobile_mastermind.ui.theme.White
@@ -92,20 +97,23 @@ private fun HomeBody(navController: NavController, uiState: HomeUiState, marginB
             points = uiState.points,
             lastGame = uiState.lastGame
         )
-        CategoriesSection(
-            categories = uiState.categories,
-            marginBot,
-            onCategoryClick = { index ->
-                val category = uiState.categories[index - 1]
-                navController.currentBackStackEntry?.savedStateHandle?.set("category", category)
-                navController.navigate(Game.route)
-            })
+        if (uiState.categories.isNotEmpty()) {
+            CategoriesSection(
+                categories = uiState.categories, marginBot, onCategoryClick = { categoryId ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "category", categoryId
+                    )
+                    navController.navigate(Game.route)
+                })
+        } else {
+            ShowEmptyList(text = stringResource(R.string.home_empty_categories))
+        }
     }
 }
 
 @Composable
 private fun UserInfoSection(
-    userName: String, userImg: Int, points: Int, lastGame: LastGame
+    userName: String, userImg: String, points: Int, lastGame: LastGameModel
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(31.dp)
@@ -121,19 +129,15 @@ private fun UserInfoSection(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(
+                Log.d(TAG, "%> imagen de usuario: $userImg")
+                AsyncImage(
+                    model = userImg,
+                    contentDescription = stringResource(R.string.user_image_content_description),
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(60.dp)
-                        .clip(CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(userImg),
-                        contentDescription = stringResource(R.string.home_user_image_content_description),
-                        modifier = Modifier.size(50.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                        .clip(CircleShape)
+                )
                 Column {
                     Text(
                         text = stringResource(R.string.home_greeting_msg),
@@ -149,30 +153,37 @@ private fun UserInfoSection(
                 style = MaterialTheme.typography.bodyMedium
             )
         }
-        LastGameCard(lastGame = lastGame)
+        if (lastGame.img != "") {
+            LastGameCard(lastGame = lastGame)
+        }
     }
 }
 
 @Composable
-private fun LastGameCard(lastGame: LastGame) {
+private fun LastGameCard(lastGame: LastGameModel) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = GreenLight
+            containerColor = lastGame.color.toComposeColor()
         )
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(
                 modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(lastGame.iconRes),
-                    contentDescription = stringResource(R.string.home_user_image_content_description),
-                    modifier = Modifier.size(80.dp),
-                    contentScale = ContentScale.Crop
-                )
+                Box(
+                    modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = lastGame.img,
+                        contentDescription = stringResource(R.string.home_category_image_content_description),
+                        modifier = Modifier.size(80.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -195,7 +206,7 @@ private fun LastGameCard(lastGame: LastGame) {
 
 @Composable
 private fun CategoriesSection(
-    categories: List<Category>, marginBot: Dp, onCategoryClick: (Int) -> Unit
+    categories: List<CategoryModel>, marginBot: Dp, onCategoryClick: (CategoryModel) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -210,7 +221,7 @@ private fun CategoriesSection(
         ) {
             items(items = categories) { category ->
                 CategoryCard(
-                    category = category, onClick = { onCategoryClick(category.id) })
+                    category = category, onClick = { onCategoryClick(category) })
             }
         }
     }
@@ -218,7 +229,7 @@ private fun CategoriesSection(
 
 @Composable
 private fun CategoryCard(
-    category: Category, onClick: () -> Unit
+    category: CategoryModel, onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -240,8 +251,8 @@ private fun CategoryCard(
                 Box(
                     modifier = Modifier.size(107.dp), contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(category.iconRes),
+                    AsyncImage(
+                        model = category.categoryImg,
                         contentDescription = stringResource(R.string.home_category_image_content_description),
                         modifier = Modifier.size(107.dp),
                         contentScale = ContentScale.Crop
@@ -255,7 +266,7 @@ private fun CategoryCard(
                         text = stringResource(
                             R.string.home_category_number_question,
                             category.type,
-                            category.quizCount
+                            category.numberQuestions
                         ), style = MaterialTheme.typography.bodyMedium
                     )
                 }
